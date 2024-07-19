@@ -4,115 +4,635 @@ include::../attribute.adoc[]
 [preface]
 == はじめに
 
-本文書は **Asciidoc** とその Ruby による実装である **Asciidoctor** を用いて Asciidoc 文書を執筆する環境を構築するガイドです。実行環境は macOS、Linux、Windows の各 OS に対応しています。
+=== セッションテーマ
 
-この文書の手順から次のことができるようになります。
+- 技術スタック
+- ユーザーストーリーマップ作成の進め方
 
-Asciidoc 形式で執筆した文書を HTML/PDF 形式に変換::
-    Asciidoc 文書変換用 Gradle ビルドの実行
-テキストエディターで変換結果をリアルタイムにプレビューしながら文書を編集::
-    Visual Studio Code と AsciiDoc 拡張の設定
+=== セッションのゴール
 
-Asciidoc は表現力の高い文書をテキストファイルベースで執筆できる軽量なマークアップ言語です。他の軽量テキストマークアップが持たない文書間のインクルードやソースコードの挿入などの機能も有し、かつ簡潔です。特に技術文書の執筆には大きな力を発揮することでしょう。
+==== 0回目
+. 本プロジェクトで選定が必要な技術要素を共有知とする。何を決める必要があるか。
+. 早期に決める必要がある要素を先行して決める。
+.. モダンな開発に欠かせないツール
+.. 事前学習が必要な技術
 
-[TIP]
-====
-Asciidoc の表現力を示すひとつの例は、このような脚注表現です。
-====
+==== 1回目
 
-一般的にテキストプロセッサーを用いた執筆とパブリッシング環境を整えるには多くの準備が必要ですが、本文書の手順は極力初期導入するプロダクトを少なく、簡単に快適な執筆環境を整えられるよう考えられました。
+. アプリの種別を決める。
+.. webアプリとなった場合は、言語、フレームワークを決める。
 
-具体的には文書の変換に、実行を JVM 環境だけに依存する **AsciidoctorJ** と **Gradle** を活用し、執筆環境については **Visual Studio Code** を用いることでリアルタイムに文書をプレビューしながら、最後にコマンド一つで HTML/PDF 化できるように準備しました。またさらに、クラウド統合環境である Gitpod や GitHub の Codespaces もサポートし、ウェブブラウザだけでの執筆・変換も実現しています。
+==== 2回目
 
-手間がかかることが多い PDF 出力に関しても、フォントセットや禁則処理設定をプロジェクトに持たせることにより、実行環境に関わらず同一出力が得られるように調整しました。
+. バックエンドのスタックを決める
+.. 言語やフレームワーク
+. AWSインフラのスタックを決める
+.. サービスの実行に関する部分の大枠
+. 急がないが、重要なポイントの共有
 
-Asciidoc による文書の執筆は形式的で効率が良く、また更新差分が取りやすいため、文書履歴管理や共同執筆環境としても有効です。このメリットをさらに活用するため、本文書ではバージョン管理システムの Git やテキストダイアグラム記法による図形や数式のベクター画像挿入をフォローしています。
+== 技術種類の説明
 
-本文書がみなさんの執筆活動のお手伝いになれば幸いです。
+目的ごとに３種類に分類する。うえから順番に早く決めた方がいい。
 
-<<<
+- 開発ライフサイクルを円滑にするための技術
+- サービスを開発するための技術
+- サービスを安全に動かすための技術
 
-=== Asciidoc と Asciidoctor について
+=== 開発ライフサイクルを円滑にするための技術
+SaaSの提供形態をとることが多く、準備に時間が掛かるケースが多い。モダンな開発に欠かせないツールで、準備が遅れると開発が始められない。
+使いながら学習するので使い方の事前学習は不要です。
 
-Asciidoc は人が読み書きしやすいプレーンテキスト文書から、HTML や PDF をはじめとした様々な形式に出力が行える軽量のマークアップ言語です。通常のテキストファイルを使った表現と似ていることから習得がしやすく、また出版向きの表現力も兼ね備えています。
+開発ライフサイクルの例::
+計画、要求・要件定義、設計、開発、テスト、デプロイ、リリース
 
-[quote, AsciiDoc Language Documentation]
-____
-About AsciiDoc
+技術要素の例::
+タスク管理、ナレッジ管理、コード管理、CICD、コミュニケーションツール
 
-AsciiDoc is a lightweight and semantic markup language primarily designed for writing technical documentation. The language can be used to produce a variety of presentation-rich output formats, all from content encoded in a concise, human-readable, plain text format.
-____
+=== サービスを開発するための技術
+事前学習することで、開発がスムーズに進行する。出来るだけ多くの事前学習時間を取るために早く決めた方がいい。
 
-Asciidoctor は Ruby でかかれた Asciidoc の実装です。構文木解析や各種出版フォーマットへの変換を実現します。
+技術要素の例::
+開発言語、フレームワーク、統合開発環境
 
-[quote, Asciidoctor Documentation]
-____
-https://docs.asciidoctor.org/asciidoctor/latest/
+=== サービスを安全に動かすための技術
+サービスが動く状態になったときに決まっており、構築が終わっていればいい。
 
-What is Asciidoctor?
+技術要素の例::
+**AWS**/Azure/GCPが提供する実行環境
 
-Asciidoctor is a fast, open source, text processor for parsing AsciiDoc into a document model, then converting it to output formats such as HTML 5, DocBook 5, man(ual) pages, PDF, and EPUB 3. Asciidoctor is written in the Ruby programming language.
-____
+== 技術選定方針
 
-同プロジェクトにおいて、ウェブブラウザ上で Asciidoc の動作を実現する Asciidoctor.js や、PDF 出力を行う Asciidoctor PDF が提供されています。また、AsciidoctorJ は、Ruby 実装である Asciidoctor を Java でかかれた Ruby 実行環境である JRuby を使って Java VM 上で動作させるプロダクトです。
+積極的な外部サービスの利用::
+可能な限りサービスプロバイダーが提供するサービスを利用し、開発運用コストを下げる。煩雑で反復的な手作業を削減し、運用に掛かるコストを削減することで、価値の創出に注力する。
 
-<<<
+スコープの限定::
+技術選定は、このプロジェトに閉じて決める。後も使い続けるか、基盤としての意思決定は別途おこなう。その判断をより価値のあるものとするために、まずは体験することに重きをおく。
 
-=== ライセンス
+議論が必要なポイントを絞る::
+最終的な判断はPOのもとおこなう。ULSから、推奨と選択肢および、ディスカッションポイントを提示する。特に意見が割れない場合は、推奨を採用する。判断が分かれるポイントに絞って、議論する。
 
-本文書に含まれる筆者が作成したビルドスクリプト、サンプル文書 ``.adoc``、ダイアグラムのなどのソースは全て **MIT License** です。ライセンスに従って自由にご利用ください。
+TIP: ULSの推奨は、過去のプロジェクトでの採用実績やプラクティスをもとに中立的な立場で推奨している。
 
-リポジトリのソースやライセンスファイルは次から参照できます。
+== 技術選定
 
-[quote, https://github.com/h1romas4]
-____
-https://github.com/h1romas4/asciidoctor-gradle-template
+=== 開発ライフサイクルを円滑にするための技術
 
-AsciidoctorとGradleでつくる文書執筆環境
-____
+==== 開発をはじめるのに必要で準備に時間が掛かる
+ライセンス費用が掛かるSaaS系のツールを先んじて決めておきたい。
 
-[NOTE]
-====
-https://h1romas4.github.io/asciidoctor-gradle-template/index.pdf[本文書の PDF 版の表紙]は https://github.com/Fujix1/[@Fujix さん] によって作成されました。
+- 〇 仮決め
+- △ 利用可否を確認する
 
-素敵なデザインをありがとうございました。
-====
+.テーブルタイトル
+[cols="2,3,2,3", options="header"]
+|===
+|技術要素 |説明 |推奨 |その他
 
-=== 謝辞
+|ナレッジ管理
+| 情報を管理する
+| 〇 GitHub Wiki / Pages
+| SharePoint ,OneNote
 
-本文書の実装であるビルドスクリプトやテーマでは次のプロダクトと技術資料が使われています。
+|プロジェクト管理
+| 計画やタスクを管理する
+| 〇 GitHub Project
+| GitHub Project,Azure DevOps
 
-プロダクト名の隣にライセンスを併記しました。商用利用等で制限のあるプロダクトはありませんが、それぞれライセンスを確認してください。
+|開発環境
+| コードを作るための環境
+| △ GitHub Codespaces
+| Cloud9 , VSCode
 
-Font::
-    * 源真ゴシック - SIL Open Font License 1.1  - http://jikasei.me/font/genshin/
-    * 源様明朝 - SIL Open Font License 1.1 - https://github.com/ButTaiwan/genyo-font
-    * Ricty Diminished - SIL Open Font License 1.1 - https://github.com/edihbrandon/RictyDiminished
-    * Morisawa BIZ UDGothic - SIL Open Font License 1.1 - https://github.com/googlefonts/morisawa-biz-ud-gothic
-    * Morisawa BIZ UDMincho  - SIL Open Font License 1.1 - https://github.com/googlefonts/morisawa-biz-ud-mincho
-    * Open Iconic - MIT License - https://github.com/iconic/open-iconic/
-Asciidoc::
-    * Asciidoctor - MIT License - https://asciidoctor.org/
-    * Asciidoctorj - Apache License 2.0 - https://github.com/asciidoctor/asciidoctorj
-    * Asciidoctor.js - MIT License - https://asciidoctor.org/docs/asciidoctor.js/
-    * Asciidoctor PDF - MIT License - https://asciidoctor.org/docs/asciidoctor-pdf/
-    * Asciidoctor Gradle Plugin Suite - Apache License 2.0 - https://github.com/asciidoctor/asciidoctor-gradle-plugin
-    * asciidoctor-pdf-linewrap-ja - MIT License - https://github.com/fuka/asciidoctor-pdf-linewrap-ja
-    * asciidoctor-nabetani - MIT License - https://github.com/nabetani/asciidoctor-nabetani
-Diagram::
-    * PlantUML - Multi(MIT/Apache/BSD/EPL/GPLv3/LGPL) - https://github.com/plantuml/plantuml
-    * ditaa - LGPL-3.0 license - https://github.com/stathissideris/ditaa
-Java Development Kit & Build Tool::
-    * Eclipse Temurin - Multi(Apache License 2.0/GPLv2+CE/GPLv2+Assembly) - https://adoptium.net/about/
-    * SDKMAN - Apache License 2.0 - https://sdkman.io/
-    * Gradle - Apache License 2.0 - https://gradle.org/
-Text Editor::
-    * Visual Studio Code - Microsoft - https://code.visualstudio.com/
-    * asciidoctor-vscode - MIT License - https://github.com/asciidoctor/asciidoctor-vscode
-    * vscode-paste-image - MIT License - https://github.com/mushanshitiancai/vscode-paste-image
-    * vscode-plantuml - MIT License - https://github.com/qjebbs/vscode-plantuml
-    * Code Spell Checker - GPL - https://github.com/streetsidesoftware/vscode-spell-checker
-Guide::
-    * asciidoctor-pdfでかっこいいPDFを作る - https://qiita.com/kuboaki/items/67774c5ebd41467b83e2
+|コード管理
+| コードを管理する
+| 〇 GitHub
+| GitLab ,Bitbucket
 
-素晴らしい成果を公開されているみなさまに感謝します。
+|AI支援
+| 開発と学習を効率化する
+| △ GitHub Copilot
+| chatGPT4
+
+|デザイン
+| デザインするためのツール
+| 〇 figma
+| InVision,Sketch
+
+|その他
+| ワークショップ、ディスカッション
+| 〇 Miro
+| Whiteboard
+
+|===
+
+==== それ以外
+
+.設計
+[cols="2,3,2,3", options="header"]
+|===
+|技術要素 |説明 |推奨 |その他
+
+|描画ツール
+|概念図やアーキテクチャ図など図の記述
+|drawio
+|powerpoint / visio
+
+| UML
+| データモデルやシーケンス図の記述
+| plantuml
+| visio/astah
+
+| 文章
+| 文書の記述に利用
+| markdown
+| asciidoc / word
+
+|===
+
+.パイプライン
+[cols="2,3,2,3", options="header"]
+|===
+|技術要素 |説明 |推奨 |その他
+
+|CI
+|ビルドなどの自動実行
+|GitHub Actions
+|jenkins/CircleCI
+
+|アプリCD
+|デプロイなどの自動実行
+|**TBD**
+|terraform/PipeCD
+
+|インフラCD
+|デプロイなどの自動実行
+|GitHub Actions
+|jenkins/CircleCI
+
+|クラスタCD
+|デプロイなどの自動実行
+|**TBD**
+|ArgoCD/FluxCD/Pipecd
+
+|パッケージリポジトリ
+|ライブラリなどの資材管理
+|GitHub Packages
+|AWS CodeArtifact / Jfrog
+
+|コンテナリポジトリ
+|コンテナ資材の管理
+|GitHub Container Registry
+|ECR / Jfrog / Nexus
+
+|===
+
+
+=== サービスを開発するための技術
+
+
+
+.フロントエンド
+[cols="2,3,2,3", options="header"]
+|===
+|技術要素 |説明 |推奨 |その他
+
+|言語
+|記述する言語
+|Typescript
+|Vanilla JS
+
+|フレームワーク
+|開発を効率的にするための仕組み
+|Nextjs
+|React / Vue.js / Nuxtjs
+
+|レンダリング方式
+|描画方式
+|CSR/SSG
+|CSR/SSR/SSG/ISR
+
+|UIコンポーネントライブラリ
+|見た目を効率的に管理する仕組み
+|MUI
+|shadcn-ui / react-bootstrap /chakraui
+
+| (new)静的解析ツール
+| コードの品質や一貫性を維持
+| ESLint
+| -
+
+| (new)コードフォーマット
+| コード整形ツール
+| prettier
+| -
+
+| (new)unit test
+| (new)単体テストのツール
+| Jest
+| vitest / Mocha
+
+| (new)ビジュアル回帰テスト
+| 見た目のテストツール
+| Chromatic&Storybook
+| Testing Library
+
+|===
+
+.バックエンド
+[cols="2,3,2,3a", options="header"]
+|===
+|技術要素 |説明 |推奨 |その他
+
+|言語
+|記述する言語
+|python
+|Typescript , Golang , Java
+
+|フレームワーク
+|開発を効率的にするための仕組み
+|FastAPI
+|
+* (python)Django / Flask
+* (Golang)Gin / echo
+* (Java)Spring / Quarkus
+
+|レンダリング方式
+|描画方式
+|CSR/SSG
+|CSR/SSR/SSG/ISR
+
+|UIコンポーネントライブラリ
+|見た目を効率的に管理する仕組み
+|MUI
+|shadcn-ui / react-bootstrap /chakraui
+
+|===
+
+=== サービスを安全に動かすための技術
+
+
+image::../images/architecture-overview.drawio.png[]
+
+.インフラ
+[cols="2,3a,2,3", options="header"]
+|===
+|技術要素 |説明 |推奨 |その他
+
+|DNS
+|名前解決
+|AWS Route53
+|-
+
+|ファイアーウォール
+|外部からの攻撃の防御
+|AWS WAF
+|-
+
+|ネットワークファイアーウォール
+|内部からの外への通信制御
+|AWS NetworkFirewall
+|-
+
+|CDN
+|コンテンツキャッシュと配信
+|CloudFront
+|cloudflare / versel
+
+|コンテンツストア
+|html/CSS/JSの置き場所
+|S3
+|-
+
+|顧客認証
+|顧客が認証するための機能
+|Auth0 **TBD**
+|Cognito
+
+|API Gateway
+|バックエンドの入り口
+|AWS API Gateway
+|Kong API Gateway
+
+|サービス実行環境
+|バックエンドのAPIやバッチを動かす場所
+| **TBD**
+| EKS on Fargate / Lambda / EC2
+
+|未加工データ配置場所
+|MA-Qの未加工データが配置される場所
+|S3
+|AWS MSK / Amazon Kinesis
+
+|持ち出し
+|マスキング後データの配置場所
+|S3
+|AWS MSK / Amazon Kinesis
+
+|データベース
+|データの格納先
+|Amazon Aurora
+|AWS DynamoDB / Amazon RDS
+
+|===
+
+.セキュリティ
+[cols="2,3,2,3", options="header"]
+|===
+|技術要素 |説明 |推奨 |その他
+
+|SCA
+|依存関係の脆弱性チェック
+|GitHub Dependabot
+|
+
+|SecretsScan
+|機密情報のチェック
+|gitleaks
+|
+
+|ContainerScan
+|コンテナの脆弱性スキャン
+|trivy
+|sysdig/AWS ECR
+
+|Web脆弱性診断
+|動的なセキュリティテスト
+|**TBD**
+|OWASP ZAP
+
+|===
+
+
+.モニター
+[cols="2,3,2,3", options="header"]
+|===
+|技術要素 |説明 |推奨 |その他
+
+|ログ管理
+|ログの保管・検索
+|**TBD**
+| NewRelic/Datadog/AWS CloudWatchLogs
+
+| APM
+| パフォーマンスやエラー発生頻度
+| **TBD**
+| NewRelic/Datadog/
+
+| ユーザモニタリング
+| ユーザ行動など
+| **TBD**
+| NewRelic/Datadog/MouseFlow/etc
+
+| 通知
+| メールや電話通知
+| **TBD**
+| NewRelic/AWS Connect/AWS SNS
+
+| 外形監視
+| 外からアクセスして問題無いか
+| **TBD**
+| NewRelic/Datadog/etc
+
+| インフラ監視
+| クラウドリソースの利用状況など
+| **TBD**
+|NewRelic/Datadog/AWS CloudWatch
+
+| インシデント管理
+| インシデントの追加、削除など
+| **TBD**
+| NewRelic/Datadog/ServiceNow/GitHub
+
+|===
+
+
+== Appendix
+
+
+=== アプリ種別
+
+コストが最も低く技術転用可能で、PWA、ハイブリッドと進化可能なwebアプリを推奨する。
+
+凡例::
+〇 > △ > ▲ > ×
+
+.アプリ種別
+[cols="2,3,2,3,3", options="header"]
+|===
+|比較軸 |Web |PWA |ハイブリッド|ネイティブ
+
+|推奨
+|〇
+|
+|
+|
+
+|主要な技術
+|web
+|web + α
+|web + mobile
+|mobile
+
+|学習コスト
+|〇
+|△
+|▲
+|×
+
+|実装コスト
+|〇
+|△
+|▲
+|×
+
+|更新コスト
+|〇
+|〇
+|×
+|×
+
+|ネイティブ機能
+|×
+|△
+|〇
+|〇
+
+|パフォーマンス
+|△
+|△
+|△
+|〇
+
+|アイコン起動
+|▲※お気に入りが開く
+|〇
+|〇
+|〇
+
+|オフライン利用
+|×
+|△
+|△
+|〇
+
+|コンテンツの検索
+|〇
+|〇
+|△
+|×
+
+|===
+
+
+=== PWAとは
+Progressive Web Application（PWA）とは、ウェブ技術を使って作られたアプリケーションで、ネイティブアプリケーションと同様のユーザーエクスペリエンスを提供することを目指しており発展途上にあります。PWAは、以下のような特徴を持っています。
+
+レスポンシブデザイン::
+様々なデバイスや画面サイズに対応する必要があります。
+
+オフラインサポート::
+Service Workerという技術を使い、オフラインでも動作することが可能です。
+
+アプリインストール::
+ウェブブラウザからインストールすることができ、ユーザーのデバイスにホーム画面アイコンを追加できます。iOSの一般ユーザはインストールに不慣れな点に注意が必要です。
+
+プッシュ通知::
+ネイティブアプリと同様に、プッシュ通知を送信することができます。
+※iOSも2023年に対応済です。
+
+高速なパフォーマンス::
+キャッシュやプリロードを活用して、迅速にコンテンツを提供します。
+
+これらの特徴により、従来のウェブサイトと比べて、ユーザーにとってより快適でリッチな体験を提供することが可能になります。
+
+=== レンダリング方式
+
+論点は、ページごとのレンダリング方式ではなく、システムとしてSSR/ISRをするかしないかとなる。
+システムとしてSSR/ISRする場合は、ページごとのレンダリング方式に選択肢がある。これは設計/実装時に考慮すべき事項なのでここでは議論しない。
+
+[cols="1,1,1,1,1"]
+|===
+| 項目 | CSR (Client Side Rendering) | SSG (Static Site Generator) | SSR (Server Side Rendering) | ISR (Incremental Static Regeneration)
+
+| レンダリングタイミング
+| クライアント（ブラウザ）で実行時に行う
+| ビルド時に行う
+| リクエストごとに行う
+| 初回リクエスト時と、事前設定した時間ごとに行う
+
+| パフォーマンス
+| 初期表示は遅いが、その後のインタラクションは速い
+| 初期表示が非常に迅速だが、動的コンテンツには不向き
+| 最初のバイトまでの時間は遅めだが、すべてのリクエストで最新の内容を提供
+| 初回表示はやや遅いが、その後のインクリメンタルビルドで高速化
+
+| SEO
+| クライアントのJavaScriptが実行されないとコンテンツが見えないため、基本的には不利
+| 事前にレンダリングされているため非常に有利
+| サーバーサイドでレンダリングされるため有利
+| 大部分が事前にレンダリングされるため有利
+
+| デプロイの難易度
+| 比較的簡単。CDNにホストしても機能する
+| 静的ファイルをホスティングするだけで済むため非常に簡単
+| サーバーインフラが必要なため中程度
+| SSGと同様に静的ファイルをホスティングするが、ISR対応のホスティングプロバイダが必要
+
+| データの鮮度
+| クライアントがデータを要求するので常に最新
+| ビルド時のデータがキャッシュされるので、更新には再ビルドが必要
+| リアルタイムで最新のデータを提供
+| 基本は最新のデータ、変化があった場合は次のリクエストで最新のデータに更新される
+
+| 開発体験
+| 開発者はクライアントサイドのコードに集中できる
+| コード分割と最適化がしやすい
+| フルスタックの知識が必要で、通常は少し複雑
+| SSGと同様の開発体験だが、一部のSSRの知識が必要
+
+| フレームワーク
+| Next.js(use client) , React, Vue.js, Angular
+| Gatsby, Next.js (Static Mode), Eleventy
+| Next.js (Server Side Mode), Nuxt.js (SSR mode)
+| Next.js (ISR Mode)
+|===
+
+
+https://zenn.dev/bitarts/articles/37260ddb28ae5d[図解]
+
+
+=== UIコンポーネントライブラリ比較
+image::../images/ui-lib.drawio.png[]
+image::../images/ui-lib-trends.drawio.png[]
+
+==== デザイン
+
+* https://mui.com/material-ui/react-select/[React Select component - Material UI (mui.com)]
+
+* https://ui.shadcn.com/docs/components/select[Select | Build your component library (ui.shadcn.com))]
+
+* https://react-bootstrap.netlify.app/docs/components/dropdowns/[Dropdowns | React Bootstrap (react-bootstrap.netlify.app)]
+
+=== SCAとは
+ソフトウェア・コンポジション解析（Software Composition Analysis, SCA）とは、ソフトウェアの依存関係やオープンソースコンポーネントを分析・管理するための技術や方法を指します。SCAの主な目的は、使用しているライブラリやフレームワークの脆弱性、ライセンスコンプライアンス、およびセキュリティリスクを特定し、それに対処することです。
+SCAの主な機能と目的は以下の通りです：
+
+依存関係の可視化::
+ソフトウェアプロジェクトが依存しているオープンソースライブラリやサードパーティ製品を特定・可視化します。
+
+更新の管理::
+依存しているライブラリやフレームワークのバージョンが古い場合、最新バージョンへの更新が推奨されることがあります。SCAツールは行うべき更新を提案します。
+
+脆弱性の検出::
+既知の脆弱性情報（CVEなど）と照らし合わせて、使用されているコンポーネントに脆弱性が含まれていないか検出します。
+
+ライセンスコンプライアンス::
+オープンソースソフトウェアのライセンス条件をチェックし、適切な使用が行われているか確認します。企業やプロジェクトによっては、特定のライセンスが使用を禁じている場合もあるため、事前に把握して対応するためです。
+
+
+=== SecretsScanとは
+パスワードやアクセストークンなどの機密情報が含まれていないかをチェックします。機密情報の漏洩を防ぐためにリポジトリへの流入を未然に防止します。
+リポジトリに混入すると、フォークなどによって思わぬ形で伝搬し漏洩する可能性があります。
+
+* APIキー
+* パスワード
+* 認証トークン
+* 秘密鍵
+* クレジットカード情報
+* その他の機密データ
+
+=== ContainerScanとは
+ContainerScan（コンテナー・スキャン）とは、主にコンテナ化されたアプリケーションやそのイメージの中で、セキュリティ上の脆弱性やコンプライアンス違反、不適切な設定などを検出するプロセスを指します。これにより、安全で信頼性の高いコンテナ環境を維持することができます。
+以下に、ContainerScanの主な要素をいくつか挙げます
+
+脆弱性スキャン::
+コンテナイメージ内のソフトウェア依存関係やライブラリ、フレームワークに存在する既知の脆弱性を検出します。これにはCVE（Common Vulnerabilities and Exposures）データベースを使用することが一般的です。
+
+マルウェア検出::
+コンテナイメージやその構成ファイルにマルウェアが含まれていないかをチェックします。
+
+ポリシーコンプライアンス::
+組織のセキュリティポリシーや業界標準に従っているかを確認します。ここでは、不適切な設定や不要なネットワークポートの開放などをチェックします。
+
+依存関係の健全性::
+使用されているライブラリやパッケージの更新状況やサポート状況を確認します。
+
+ベストプラクティス検証::
+DockerfileやKubernetesの設定ファイルがベストプラクティスに従っているかを検証します。
+
+=== Web脆弱性診断とは
+Web脆弱性診断とは、ウェブアプリケーションやウェブサイトに存在する脆弱性を検出し、セキュリティリスクを評価するプロセスを指します。ウェブアプリケーションは、サイバー攻撃のターゲットになることが多く、情報漏洩やデータ破壊などの被害を防ぐために、定期的な脆弱性診断が重要です。
+
+よくあるパターンでは、リリース前および半年～１年に一回など定期的に実施します。
+
+
+=== 開発言語
+
+==== トレンド
+
+* https://survey.stackoverflow.co/2023/#programming-scripting-and-markup-languages[StackOverflow 2023 survey | 開発言語]
+* https://github.blog/2023-11-08-the-state-of-open-source-and-ai/#the-most-popular-programming-languages[GitHub 2023 survey | 開発言語]
+* https://www.jetbrains.com/ja-jp/lp/devecosystem-2023/[Jetbrains 2023 survey | 開発言語]
+
+=== フレームワーク
+https://survey.stackoverflow.co/2023/#web-frameworks-and-technologies[StackOverflow 2023 survey | フレームワーク]

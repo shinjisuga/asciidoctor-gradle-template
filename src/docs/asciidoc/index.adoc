@@ -1,9 +1,9 @@
 include::./attribute.adoc[]
 
 // 表紙デザインの PDF がある場合 true を、Asciidoc 標準の表紙を使う場合は false を設定。
-:front-cover-on-pdf: true
+:front-cover-on-pdf: false
 // 裏表紙デザインの PDF がある場合 true を、ない場合は false を設定。
-:back-cover-on-pdf: true
+:back-cover-on-pdf: false
 
 // PDF 表紙・裏表紙設定
 ifdef::backend-pdf[]
@@ -25,40 +25,52 @@ endif::[]
 // Author:   https://github.com/h1romas4/asciidoctor-gradle-template
 // Creator:  Asciidoctor PDF 1.6.2, based on Prawn 2.4.0
 // Producer: https://github.com/h1romas4/asciidoctor-gradle-template
-= AsciidoctorとGradleでつくる文書執筆環境
-https://github.com/h1romas4/asciidoctor-gradle-template
-v4.2.0, devel
-:toc: macro
+
 
 // 章ごとにインクルードしていく（画像パスも上書きすること）
-
-// はじめに
-:imagesdir: Chapter00/images
-include::Chapter00/index.adoc[]
+// = 技術スタックディスカッション
+// // はじめに
+// :imagesdir: Chapter00/images
+// include::Chapter00/index.adoc[]
 
 // 目次
-toc::[]
+// toc::[]
 
-// 1章
-:imagesdir: Chapter01/images
-include::Chapter01/index.adoc[]
+// = オブザーバビリティ骨子
+// // 1章
+// :imagesdir: Chapter01/images
+// include::Chapter01/index.adoc[]
 
 // 2章
-:imagesdir: Chapter02/images
-include::Chapter02/index.adoc[]
+// = GitHub 勉強会
+// :imagesdir: Chapter02/images
+// include::Chapter02/index.adoc[]
 
-// 3章
-:imagesdir: Chapter03/images
-include::Chapter03/index.adoc[]
+// // 3章
+// = モダンなCICD
+// :imagesdir: Chapter03/images
+// include::Chapter03/index.adoc[]
 
 // 4章
-:imagesdir: Chapter04/images
-include::Chapter04/index.adoc[]
+// = トイルとの闘い方
+// :imagesdir: Chapter04/images
+// include::Chapter04/index.adoc[]
 
-// 5章
-:imagesdir: Chapter05/images
-include::Chapter05/index.adoc[]
+// // 5章
+// = 全体計画ディスカッション
+// :imagesdir: Chapter05/images
+// include::Chapter05/index.adoc[]
 
-// 奥付
-:imagesdir: Chapter99/images
-include::Chapter99/index.adoc[]
+// 6章
+// = 開発ルール・プロセスのディスカッション
+// :imagesdir: Chapter06/images
+// include::Chapter06/index.adoc[]
+
+// 7章
+= IaCをより高度に活用する
+:imagesdir: Chapter07/images
+include::Chapter07/index.adoc[]
+
+// // 奥付
+// :imagesdir: Chapter99/images
+// include::Chapter99/index.adoc[]

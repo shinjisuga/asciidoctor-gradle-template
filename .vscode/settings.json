@@ -17,5 +17,6 @@
         "editor.stickyScroll.enabled": true,
         "editor.minimap.enabled": true,
         "editor.minimap.autohide": true
-    }
+    },
+    "asciidoc.antora.enableAntoraSupport": false
 }

@@ -1,0 +1,72 @@
+include::../attribute.adoc[]
+
+
+== アジェンダ
+
+* Platform Engineering
+* 二つのIDP
+* Internal Developer Potal
+* Backstage
+* Try it now
+
+== 二つのIDP
+
+https://www.gartner.co.jp/ja/articles/what-is-platform-engineering
+
+https://tag-app-delivery.cncf.io/whitepapers/platforms/#capabilities-of-platforms
+
+=== Internal Developer Potal
+
+Internal Developer Platform を利用するためのポータル。開発者の認知負荷をさげ、簡単に素早くInternal Developer Platformを使えるようにする。
+
+=== Internal Developer Platform
+複雑なインフラストラクチャを隠蔽し、使いやすく提供する。Platform Engineeringで求められる基盤機能を提供する。
+
+
+== Backstage
+
+> 開発者ポータルを構築するためのオープンソース フレームワークです。一元化されたソフトウェア カタログを搭載した Backstage は、マイクロサービスとインフラストラクチャの秩序を回復し、製品チームが自律性を損なうことなく、高品質のコードを迅速に出荷できるようにします。
+
+https://youtu.be/85TQEpNCaU0
+
+開発規模が大きくなると開発者が必要とする情報が断片化し、エンジニアの生産性が著しく低下します。
+
+WARNING: APIは何に依存している？
+
+WARNING: APIの仕様はどこ？
+
+WARNING: フレームワークのバージョンは？
+
+WARNING: サービスの主管は？
+
+WARNING: 誰に聞けばいい？
+
+=== 主要機能
+
+Tech Docs::
+リポジトリに分散しているドキュメントを一元管理できるようになります。これにより、ソースとドキュメントを同じ場所におきつつ会社全体のドキュメントを１つの場所で管理できるようになります。
+開発者は、ソースとドキュメントを同じ場所に置くことを好みます。なぜなら、ソースの変更とともにドキュメントも併せて修正し、１つのプルリクエストに乗せてレビューを依頼させたい。
+コードを変更するときにドキュメントを探さずにみたいからです。
+
+Software catalog::
+自社で保有・管理するサービスやWebサイト、ライブラリなどのソフトウェア資産を一元管理することができるようになります。
+これにより、サービスの主管を明らかにし問い合わせ先が明確になります。
+OpenAPI SpecificationでAPI仕様を一元管理するだけでは不足しがちなサービスの主管を明らかにするとともにAPI以外のソフトウェア資産を一元管理できるようになります。
+
+Software Template::
+ソフトウェアのひな型を管理できる機能です。これにより、開発を始めるまでの時間を大幅に短縮できるようになります。
+マイクロサービス化では、サービスを新規に開発する頻度が多く、
+同じようなセットアップ作業を繰り返す必要がありました。
+テンプレートを選択することで、ただちに開発に取り掛かれるようになります。
+
+Plugins::
+NewRelic、Sysdigを始め様々なツールのプラグインが公開されており、Internal Developer Platformをより使いやすくします。
+また、独自のプラグインを開発することも可能です。
+
+https://backstage.io/plugins
+
+== Try it now
+
+Backstageを試すハードルは比較的高く、断念するシーンを多く見かけます。日本から簡単に試すことができるOSSが埋まれています。
+
+https://github.com/ap-communications/chocott-backstage

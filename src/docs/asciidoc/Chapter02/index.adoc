@@ -1,977 +1,303 @@
 include::../attribute.adoc[]
 
-== Asciidoc から HTML/PDF 文書を作成する
 
-=== サンプル文書の変換を試す
+== GitHub 複数Org管理方針例
+別紙参照
 
-本項では準備した環境を元に、Asciidoc 文書を HTML/PDF に変換する手順を示します。
+== GitHub 単一Org管理方針例
 
-変換に使うスクリプトは GitHub のリポジトリに公開されており、HTML/PDF 変換に使うファイル一式と、文書のサンプルとして "この文書" の Asciidoc ファイルが配置されています。
+=== 権限管理方針
+Organizationのメンバーを チーム に所属させ、 チーム 単位でリポジトリの権限を設定します。これにより、**煩雑な権限管理業務が軽減され、効率的な管理が可能**になります。個々のユーザにリポジトリ毎に異なる権限を設定することも出来ますが、煩雑な権限管理業務が発生し強い権限を付けたままになるなどのリスクがあります。効率的で作業漏れのしずらい運用を優先し **チーム単位での権限設定** とします。
 
-文書変換スクリプトの実行には、前項で導入した Java 上で動作する **Gradle** ビルドツールが使われ、リポジトリに含まれる ``gradlew`` シェルスクリプトを起点として各種設定が自動的に行われ、Asciidoc 文書から HTML/PDF 文書への変換が実行されます。本文書ではこれを、文書のビルドもしくは単純にビルドと呼ぶこととします。
+そのため、原則としてアウトサイドコラボレータは利用しません。メンバーとして招待します。
+アウトサイドコラボレータとして招待する場合は、プロジェクト管理者の責任において権限管理をおこないます。
 
-[NOTE]
-====
-``gradlew`` コマンドは ``gradlew [タスク名]`` として実行したい機能を呼び分けられます。``docs`` 部分はこの機能を用い、ビルドスクリプト内で文書ビルドのタスクと定義しています。タスク名称や操作の内容は、リポジトリ中の ``build.gradle`` ファイル中に含まれます。
-====
+たとえば、プロジェクトごとに管理者チーム、開発運用者チームを作成し、それぞれのチーム に対して権限を付与します。個人単位のでの権限付与は特別な事情が無い限り行いません。
 
-最初にリポジトリからこれらのファイルの取得を行い、次に Asciidoc 文書を HTML/PDF 変換するためにビルドを実行します。各 OS ごとの代表的な操作は次のようになります。
+==== チーム種別
 
-==== サンプル文書の変換（macOS / Linux）
+管理に必要な権限を有する管理者チームと、プロジェクト毎の開発に必要な権限を有する開発運用者チームとします。管理者チームは常に１チームですが、開発運用者チームはプロジェクト毎に作成します。
 
-ターミナルを起動し ``curl`` コマンドでリポジトリファイルの取得を行い、``.zip`` の展開とビルドの実行を行います。
+GitHub 管理者チーム::
+GitHubの全管理権限を有します。貴社社員の中でも特定のメンバーのみが加入します。
 
-[source]
-[caption="手順. "]
-.PDF 変換ビルドスクリプトの取得と実行
-----
-$ curl -L -O https://github.com/h1romas4/asciidoctor-gradle-template/archive/main.zip # <1>
-$ unzip main.zip # <2>
-$ cd asciidoctor-gradle-template-main # <3>
-$ ./gradlew docs # <4>
-BUILD SUCCESSFUL in 1m 13s <5>
-2 actionable tasks: 2 executed
-----
+TIP: GitHub管理者チームを作成せずに、管理ユーザを共有するパターンもあります。
 
-<1> リポジトリのファイルをダウンロードします。
-<2> ダウンロードした .zip ファイルを展開します。
-<3> カレントディレクトリを展開したフォルダの中に移します。フォルダ名は任意のものに変更可能です。本手順ではプロジェクトフォルダと呼称します。
-<4> Gradle のビルドを実行します。初回実行時はビルドに必要なファイルをダウンロードするため少し時間がかかります。次回以降は 1分程度で完了します。
-<5> ``BUILD SUCCESSFUL`` が出力されれば文書変換が正常終了しています。
+プロジェクト管理者チーム::
+プロジェクトごとに作成します。
+原則として、貴社社員のみが所属するチームです。これは、貴社の社員のみが所属することを意味します。プロジェクトの開発に必要な権限に加えて、プロジェクトの管理権限を有します。
 
-<<<
+プロジェクト開発運用者チーム::
+プロジェクトごとに作成し、開発運用者が所属します。これは、他社もしくは個人が所属することを意味します。プロジェクト対象のリポジトリで開発できる権限を有します。管理権限が必要な場合は、申請承認を得て一時的に昇格し作業完了後に権限を剥奪します。
 
-==== サンプル文書の変換（Windows）
+==== 権限管理
 
-ウェブブラウザで URL にアクセスしてリポジトリファイルの取得を行い、エクスプローラで ``.zip`` を展開し、最後にコマンドプロンプトから Gradle タスクを実行します。
+GitHubのロールは、Organizationとリポジトリで異なります。それぞれについて下記に記載します。
 
-[CAUTION]
-====
-Windows の場合 .zip ファイルの展開先はマルチバイト文字を含まないパスにしてください。JRuby の制約により変換処理がエラーとなります。また、プロジェクト内部で使うフォルダやファイル名のマルチバイト名も同様です。
-====
+### Organization
 
-. ブラウザを使って ``https://github.com/h1romas4/asciidoctor-gradle-template/archive/main.zip`` にアクセスしリポジトリのファイルを取得します。
-. ダウンロードした .zip ファイルを右クリックし展開します。フォルダ名は任意のものに変更可能です。本手順ではプロジェクトフォルダと呼称します。
-. 展開したフォルダ内をエクスプローラーで表示した上で、アドレスバーに ``cmd.exe`` もしくは ``powershell.exe`` と入力し、このフォルダをカレントディレクトリとしてコマンドプロンプトを起動します。
-+
-image::windows-01.png[windows, pdfwidth=70%, width=70%]
+Organizationや、Organizationのリポジトリ、Team、設定を管理してもらうために付与する権限のセットで、５つのロールが定義されています。管理者チームは `Owner` ロールを割り当て、開発運用者チームに `Member` ロールを割り当てます。
 
-. ``.\gradlew.bat docs`` と入力しビルドを実行します。初回実行時はビルドに必要なファイルをダウンロードするため少し時間がかかります。次回以降は 1分程度で完了します。
-+
-[source]
-[caption="手順. "]
-----
-> .\gradlew docs
-BUILD SUCCESSFUL in 1m 10s <1>
-2 actionable tasks: 2 executed
-----
-<1> ``BUILD SUCCESSFUL`` が出力されれば文書変換が正常終了しています。
+各ロールについては、 https://docs.github.com/ja/organizations/managing-peoples-access-to-your-organization-with-roles/roles-in-an-organization[公式リファレンス：Organizationのロール] を参照ください。
 
+### Repository
 
-.プロキシーサーバーの設定
-****
-もしお使いのコンピューターがプロキシーサーバー経由のインターネットアクセスを行う場合は、次のコマンドを ``./gradlew docs`` をする前に入力してください。インターネットを使ったライブラリの取得が正しく行われるようになります。ホスト名（``example.com``） と ポート番号（``8080``）部分はそれぞれの環境に合わせてください。
+チーム毎のリポジトリ権限は、GitHubのデフォルトロールを利用し権限を設定します。開発運用するなかで不十分な場合は、カスタムロールを作成することで対応します。
+管理者チームは、リポジトリ毎の制限は行わず、すべてのリポジトリで `admin` ロールを割り当てます。開発運用者チームは、プロジェクト対象のリポジトリにのみ `write` ロールを割り当てます。
 
-[source]
-[caption=""]
-.プロキシーサーバー設定（macOS / Linux）
-----
-export JAVA_OPTS=-DproxyHost=example.com -DproxyPort=8080
-----
+各ロールの詳細については、 https://docs.github.com/ja/organizations/managing-user-access-to-your-organizations-repositories/managing-repository-roles/repository-roles-for-an-organization[公式リファレンス：Organizationのリポジトリロール] を参照ください。
 
-[source]
-[caption=""]
-.プロキシーサーバー設定（Windows）
-----
-set JAVA_OPTS=-DproxyHost=example.com -DproxyPort=8080
-----
-****
+ファイルやディレクトリレベルでの細かい制御は、`CODEOWNERS` という機能でおこないます。
 
-<<<
+#### CODEOWNERS
 
-=== 変換後の文書
+`CODEOWNERS` は、ファイルやディレクトリレベルで所有者を設定できます。`CODEOWNERS` を設定しブランチプロテクションルールでブランチを保護することで、変更には `CODEOWNERS` の承認が必須となります。
 
-``./gradlew docs`` のビルド操作により Asciidoc から変換された文書は、プロジェクトフォルダの ``docs`` 配下に HTML版(``index.html``)と PDF版（``index.pdf``）として格納されます。
+設計ドキュメント、CIパイプラインに関連するファイルおよび、Environmentリポジトリの全ファイルを対象に管理者チームを `CODEOWNERS` に設定します。これにより、承認無く設計やパイプラインおよび、環境の変更が出来なくなります。
 
-[caption="画像."]
-.HTML 文書
-image::html.png[html, pdfwidth=80%, width=80%]
+例えば、 `main` ブランチを保護し `docs` フォルダのファイル所有者を管理者チームを設定した場合、開発運用者チームは、 `main` ブランチを直接変更できなくなります。変更するためには、 `feature` ブランチで `docs` フォルダのファイルを変更し、 `main` ブランチへ向けたプルリクエストを出します。管理者チームがレビューし承認することで、 `main` ブランチへ反映可能となります。
 
-[caption="画像."]
-.PDF 文書
-image::pdf.png[pdf, pdfwidth=80%, width=80%]
+`CODEOWNERS` の詳細については、 https://docs.github.com/ja/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners[公式リファレンス：コードオーナーについて] を参照ください。
 
-<<<
+==== 権限管理のFAQ
 
-ビルド結果の出力先となる HTML/PDF 文書フォルダ（``docs``）フォルダの構成は次のとおりです。
+outside collaboratorとチーム招待の違い::
+チームで管理できない。アカウント毎に設定が必要になり煩雑で反復的な作業が発生しやすい。
+SSOできない。
 
-.HTML/PDF 文書フォルダ（``docs``）
-[caption="図. "]
-[plantuml, directory-structure-1, svg, pdfwidth=70%, width=680px]
-----
-include::puml/directory-structure-1.puml[]
-----
+=== リポジトリ管理方針
 
-ビルド対象の文書となるソースフォルダ（``src/docs/asciidoc``）の構成は次のとおりです。
+ポリレポと モノレポという大別して二つの考え方があるが、認知負荷の低さとパイプラインの保守運用性を優先し ポリレポ を採用します。 モノレポを採用することで、開発の容易性を向上させることもできますが、エコシステムの充実が不十分であり比較的高度なパイプラインの運用保守が必要となります。モノレポ は、固有の知識やスキルセットが必要となりますが、現時点(2023/10/19)では一般的な認知度はそれほど高くなく、経験者の獲得は難しく未経験者には学習が必要となります。
 
-.ビルド対象のソースフォルダ（``src/docs/asciidoc``）
-[caption="図. "]
-[plantuml, directory-structure-2, svg, pdfwidth=62%, width=590px]
-----
-include::puml/directory-structure-2.puml[]
-----
+- ポリレポとは、ある一定粒度でリポジトリを分割して、複数のリポジトリで管理するアプローチ
+- モノレポとは、複数のプロジェクトまたはシステムをまとめて、単一のリポジトリで管理するアプローチ
 
-ビルドの基本的な動作は次のようになります。
+==== リポジトリトポロジー
 
-* HTML/PDF 文書フォルダ（``docs``）内のファイルを全て削除する。
-* ソースフォルダ（``src/docs/asciidoc``）に配置された Asciidoc 文書と画像などのリソースを変換処理し、HTML/PDF 文書フォルダに格納する。
-** Asciidoc 文書に後述するダイアログ記法による図表が存在していた場合はベクター画像生成する。
-** HTML 版の文書は ``docs/index.html`` として生成。``docs/Chapter*/images`` フォルダに配置した画像などのリソースをリンクする。
-** PDF 版の文書は ``docs/index.pdf`` として生成。フォントや画像リソースなど全てを PDF ファイル内に格納する。
+本プロジェクトにおけるリポジトリの種類と包含関係を下図に示します。`Frontend Service Repository` と `Backend Service Repository` はリポジトリを分けます。
+また、図中の各Repositoryは、単一のリポジトリでは無く分類を示しています。これは、`Backend Service Repository`など図中で緑色のリポジトリが複数存在することを示しています。
 
-以上からビルドした文書の配布は次のようになります。
+image::./repo-type.drawio.png[]
 
-[format="csv",cols="1,2"]
-[frame="topbot",grid="none"]
-|======
-HTML 版の文書,``docs``フォルダの ``index.pdf``を除く全てのファイルを配布。
-PDF 版の文書, ``docs/index.pdf`` のみを配布。
-|======
+==== リポジトリ種別一覧
 
-なおいずれの場合も ``index.*`` のファイル名は任意の名称に変更可能です。
+===== Application Repository
+各種サービスやライブラリーリポジトリ群です。これらのリポジトリ群は、各種サービス、テスト、ビルドツール、コンテナ、CIパイプラインのコードやそれらの設定情報を有します。
 
-[CAUTION]
-====
-HTML/PDF 文書フォルダ（``docs``）はビルドした文書を配置する専用フォルダです。ソースフォルダと同期するためビルド時にいったん全てのファイルが削除されますので、**自らが作成したファイルは配置しない**ように注意してください。執筆で作成するファイルは必ず ``src/docs/asciidoc`` 配下に配置します。
+Frontend Service Repository::
+フロントエンド用のリポジトリ。パイプラインの最終成果物は、単一パッケージとなりバージョン管理します。
 
-なお、この後解説する Visual Studio Code テキストエディタでは、プロジェクト設定で ``docs`` フォルダをリードオンリーに指定し、誤ってファイルを追加・修正できないように制御してあります。
-====
+Backend Service Repository::
+バックエンド用のリポジトリ。パイプラインの最終成果物は、単一コンテナとなりバージョン管理します。
 
-=== テキストエディタで Asciidoc 文書を編集する
+(optional)Frontend Library Repository::
+フロントエンドサービスが分割・新規作成された際に共通化したいライブラリのコードを管理するリポジトリ。パイプラインの最終成果物は、単一パッケージとなりバージョン管理され、フロントエンドサービスで利用します。
 
-==== Visual Studio Code の導入（macOS / Linux / Windows）
+(optional)Backend Library Repository::
+バックエンドサービスが分割・新規作成された際に共通化したいライブラリのコードを管理するリポジトリ。パイプラインの最終成果物は、単一ライブラリとなりバージョン管理され、バックエンドサービスで利用します。
 
-Visual Studio Code（以下 VS Code）は、Microsoft が提供する高性能なフリーソフトウェアのテキストエディタです。
+(optional)Ops Optimize Service Repository::
+開発運用業務を効率化したり、自動化するためのサービスのコードを管理するリポジトリ。パイプラインの最終成果物は、単一コンテナとなりバージョン管理します。
 
-本手順のプロジェクトフォルダには VS Code 用の設定ファイル（``.vscode`` 配下）が配置されており、自動的に Asciidoc 文書向けの設定がされるように構成されています。
+===== Environment Repository
 
-次のサイトからお使いの OS に合わせた VS Code を導入してください。
+環境情報やデプロイ、リリース設定を保持するリポジトリの総称。各環境ブランチへ変更が反映されることにより、自動的に当該環境の設定が変更します。
 
-[quote, Visual Studio Code - Code Editing. Redefined]
-____
-https://code.visualstudio.com/
+Infra Repository::
 
-Free. Built on open source. Runs everywhere.
-____
+Azureなどのクラウドリソースの設定情報を有します。
 
-インストールプロセスではオプションを次のように指定し、コンテキストメニューに VS Code を追加すると今後の操作が便利になります。
+(optional)Cluster Repository::
 
-image::2023-09-19-20-26-44.png[width=60%, pdfWidth=60%]
+クラスタを利用する場合の選択肢となります。infraリポジトリ内で管理しても良いが、運用が難しい場合に利用します。Kubernetesなどのクラスタおよびそのコンテナの設定情報を有します。
 
-VS Code ではプロジェクトとして「フォルダを開く」操作をよく活用します。このことから、エクスプローラなどのシェルのフォルダ右クリックのコンテキストメニューに VS Code を追加すると素早い操作ができるようになります。
+===== Other Repository
 
-以上で、VS Code の準備は完了です。
+`Application Repository` と `Environment Repository`に該当しないその他のリポジトリ群です。
 
-==== Visual Studio Code の導入（WSL2 Ubuntu 環境）
+Docs Repository::
 
-WSL2 環境上の Ubuntu で VS Code を使う場合は「Windows 版 VS Code」を導入後さらに次の WSL 拡張をインストールします。この拡張に処理により、VS Code のバックエンド処理が Ubuntu 側で、フロントエンド画面が Windows 側で動作できるようになります。
+プロジェクトの運営ルールや開発ルールや、リポジトリを跨る設計情報などのドキュメント配置先です。
 
-[quote, WSL - Visual Studio Marketplace]
-____
-https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl
+Template Repository::
 
-The WSL extension lets you use VS Code on Windows to build Linux applications
-that run on the Windows Subsystem for Linux (WSL).
-You get all the productivity of Windows while developing with Linux-based tools, runtimes, and utilities.
-____
+リポジトリを新規に作成する際の雛型になるリポジトリ。即座に開発を始めるためおよび、負の影響からリポジトリを保護するための初期設定やファイルを保持しています。
 
-拡張導入後、一度 VS Code を終了してください。
+===== etc
 
-次に、WSL2 Ubuntu のターミナル画面で `code` コマンドを入力することで WSL2 Ubuntu 上で VS Code バックエンドの初期セットアップが動作し、その後 Windows 上で VS Code フロントエンド画面が立ち上がります。
+全てのリポジトリに対して、共通的なテンプレートを提供できる `.github`などのメタリポジトリや、汎用的な用途のprojectリポジトリなど。
 
-[source, bash]
-[caption="手順. "]
-.WSL2 Ubuntu 22.04 への VS Code サーバの導入
-----
-$ code # <1>
-----
-<1> WSL Ubuntu 環境上から Windows 側の VS Code を起動する。
+==== リポジトリ命名規約
 
-以上で、VS Code の準備は完了です。
+`<プロジェクト識別子>-<固有名>-<種別>`
 
-ここから先の手順で VS Code を起動する場合は同様に WSL2 Ubuntu のターミナル画面から `code` コマンドで起動してください。
+例）
 
-[source, bash]
-[caption="手順. "]
-.WSL2 Ubuntu 22.04 からの VS Code 起動
-----
-$ cd asciidoctor-gradle-template <1>
-$ code . <2>
-----
-<1> 編集したいプロジェクトにカレントディレクトリを移します。
-<2> `.` とカレントディレクトリを指定して VS Code を起動します。
+* プロジェクト識別子が、 `ccp`
+* 固有名が、feedback
+* 種別が、Backend Service Repository
 
-なお、VS Code WSL2 拡張の詳細は次のドキュメントから得られます。
+ccp-feedback-bs
 
-[quote, Developing in the Windows Subsystem for Linux with Visual Studio Code]
-____
-https://code.visualstudio.com/docs/remote/wsl
+==== Topics
 
-The Visual Studio Code WSL extension lets you use the Windows Subsystem for Linux (WSL) as your full-time development environment right from VS Code. You can develop in a Linux-based environment, use Linux-specific toolchains and utilities, and run and debug your Linux-based applications all from the comfort of Windows.
-____
+それ以外のリポジトリを修飾する情報を付与します。
 
-<<<
+例)
+言語など
 
-==== VS Code による Asciidoc 文書のリアルタイムプレビュー
 
-本手順のプロジェクトフォルダに配置された Asciidoc 文書は、VS Code を利用してリアルタイムに変換結果をプレビューしながら編集できるように設定されています。
+== GitHub Copilot
 
-最初のステップとして、プロジェクトフォルダを VS Code を開きます。VS Code でプロジェクトを開く場合は、次のように「フォルダで開く」などの操作でプロジェクトフォルダがルートになる形で行うことに注意します。
+=== 導入の狙い
+* 生産性の向上が期待できる。他のプロジェクトで得た効果を中心に記載。
+** フロントエンドの静的解析エラー解消が早くなる
+** API 設計記載時の高効率なサジェスト
+** エラー解消に掛かる時間の短縮
+** terraform / azure など未経験領域で、サジェストを通じた高い学習効果（開発未経験者が開発に貢献できるレベル）
+** etc...
 
-image::2023-09-19-16-33-05.png[width=70%, pdfWidth=70%]
+=== 発生コスト
+* 導入に掛かるコストはほぼゼロ
+* 学習コストもほぼゼロ。使い始めから効果を発揮する類のソリューション
+* １人当たりの月額　$19/month
 
-[TIP]
-====
-プロジェクトフォルダのオープンは、エクスプローラなどのシェルからフォルダを右クリックして表示されるコンテキストメニューの btn:[Code で開く] 操作や、ターミナル画面からカレントディレクトリを ``cd`` コマンドで移動し ``code .`` と入力することでも可能です。
-====
+=== 費用対効果
+* 10-55%の生産性向上が期待できる。
+* copilotを利用して開発者が作業時間を１時間程度短縮できればペイする。
 
-次に VS Code から推奨拡張機能に関する問い合わせが表示されますので、確認の上、次のような操作で導入してください。
+=== 懸念事項
+==== ライセンス権の侵害
+ライセンス権の侵害リスクがある。生成されたコードが他者のライセンス権を侵害する可能性がある。
 
-. menu:このワークスペースには拡張機能の推奨事項があります。[すべてインストール] ボタンをクリックします。
-+
-image::vscode-extension1.png[vscode, pdfwidth=50%]
-+
-WSL2 Ubuntu 環境を使っている場合は合わせて WSL2 側にも拡張の導入を行います。
-+
-image::2023-09-17-13-30-33.png[pdfwidth=60%, width=60%]
+==== 機密情報の漏洩
+開発中の情報を外部へ送信するため、機密情報の漏洩リスクがある。
 
-. btn:[再読み込み] ボタンをクリックします。
-+
-image::vscode-extension2.png[vscode, pdfwidth=50%]
+==== セキュリティリスク
+セキュリティリスクがある。脆弱性を含むコードが提案される可能性がある。
 
-[TIP]
-====
-VS Code のリアルタイムプレビュー設定は ``.vscode/settings.json`` ファイルで、導入推奨拡張は ``.vscode/extensions.json`` ファイルで定義されています。
+=== 懸念事項への対応
+==== ライセンス権の侵害
 
-これらのファイルを修正することで、例えば拡張に日本語校正やスペルチェックを追加し設定を定義するなど、執筆メンバーの環境を揃えられます。
-====
+ * 特定の設定をすることで、ライセンス侵害が発生した場合、賠償請求に対してGitHub社が無制限に補償
+** https://github.com/customer-terms/github-copilot-product-specific-terms
+** https://github.com/customer-terms/general-terms
 
-以上で Asciidoc 文書編集のための準備が完了しました。
+==== 機密情報の漏洩リスク
 
-<<<
+ * 機密情報をリポジトリに含まないように運用している。開発環境の機密情報は開発者が知り得るが、本番環境は知りえない想定。
+ * シークレットは、プリコミット＋パイプラインで混入を検出・ブロックしている。
+ * 個人情報が含まれるデータは、機械的にマスキングされたもののみを利用可能とする。本番環境データ持ち出しは、マスキングされたものだけが対象となり、管理者承認なく持ち出せない。そのため、CodespacesやCopilotに混入することはない。
 
-VS Code 左パネルのエクスプローラーから、Asciidoc 文書（``src/docs/asciidoc/index.adoc``など）を開き、文書を開いたエディタ部右上に配置された btn:[Open Preview to the Side]アイコンをクリックすると、画面右側に Asciidoc 文書の変換がリアルタイムに確認できるプレビューが表示されます。
+==== セキュリティリスク
 
-.Asciidoc 拡張 Open Preview to the Side
-[caption="画面. "]
-image::2023-09-24-15-34-04.png[pdfwidth=70%, width=70%]
+ - 開発者が脆弱性を含まないコードを書かないとは限らない。
+ - 開発者の目に必ず触れ、さらに実装者以外の１名以上のレビューが必須になっている。
+ - 事前定義されたもののみではあるが、パイプラインで検査されている。
 
-TIP: プレビュー表示操作はキーボードショートカット btn:[Ctrl + k, v] でも可能です。また、画面右側ではなく現在のエディタグループに表示する場合は btn:[Ctrl + Shift + v] を押下します。
+== GitHub Codespaces
 
-.Asciidoc のリアルタイムプレビュー
-[caption="画面. "]
-image::vscode-asciidoc.png[width=80%, pdfWidth=80%]
+=== https://docs.github.com/ja/codespaces/overview[概要]
 
-``.adoc`` ファイルには本文書の内容がそのまま Asciidoc 文書形式で書かれているのが分かります。いくつか開いて試し入力などをしてみると、Asciidoc 文書のリアルタイムプレビューを含め執筆の雰囲気が掴めるはずです。
+https://docs.github.com/ja/codespaces/overview[GitHub Codespaces の概要]より引用
 
-<<<
+> codespace は、クラウドでホストされている開発環境です。 構成ファイルをリポジトリにコミットすることで、GitHub Codespaces のプロジェクトをカスタマイズできます (コードとしての構成とよく呼ばれます)。
 
-==== クリップボードからの画像挿入
+Dev environments as code に分類されるVSCodeを主体としたCloud IDEです。開発環境の構成を宣言的にコードで記述でき、その環境を瞬時に起動し即座に開発を開始できます。単純な `web editor` ではなく、アプリケーションを起動しデバッグなども出来ます。web browser、localのVSCode、intellijから利用できます。
 
-本手順で VS Code の推奨拡張として導入される https://marketplace.visualstudio.com/items?itemName=mushan.vscode-paste-image[Paste Image]（``mushan.vscode-paste-image``） は、クリップボード上にある画像をファイルとして指定の位置に格納した上で、Asciidoc 文書にリンクを挿入する便利な拡張です。
+=== アーキテクチャ
 
-特にコンピュータの操作手順文書をつくる場合に活用すると強力です。次のような簡単な操作でクリップボードの画像を Asciidoc 文書に挿入できます。サンプル文書内で操作を試してみると良いでしょう。
+image::./codespaces.drawio.png[]
 
-. スクリーンキャプチャなどの機能でクリップボードに画像を保持する。
-. VS Code で Asciidoc 文書を開き、menu:VS Code[F1 キー押下 > Paste Image と入力 > エンターキーで選択]する。
-+
-image::2023-06-30-12-11-56.png[pdfwidth=70%]
+=== 従来型のlocal IDEを利用して開発する場合との比較
 
-Asciidoc 文書には画像リンクが挿入されるとともに、開いている Asciidoc 文書から相対で ``images/`` として見えるパスに画像ファイルが格納され、文書への画像挿入がひとつの操作で完了します。
+==== メリット
 
-[source]
-[caption=""]
-----
-image::2023-06-30-12-11-56.png[]
-----
+* 開発運用者の開発環境構築コストが不要になる。cloneさえ不要になる。即座に開発を開始できる
+* 準備・メンテナンスコストが軽減される。開発環境構築ガイド作成から開発環境をコードで宣言するに変わる。
+* 開発環境が開発運用者の端末に依存しない。
+** そもそも、開発環境を作る時の考慮事項が減る。
+** トラブル発生頻度や解消に掛かる時間が減少する。
+** 私の端末では動いたけど、動かないです？とかが無くなる。
+* 開発環境を容易にスケールアップできる。
+* 開発環境の構成変更を容易に開発運用者に適用できる。
+* 開発環境が壊れてもすぐ元に戻る。開発環境を破壊しかねないチャレンジが容易になる。
+* リモートでのペアプログラミングが容易。同時編集できる。
+* パーソナルアクセストークンなどの発行や管理が不要。GitHub Codespaceは最初からリポジトリに紐づいておりコミットやプッシュができる。
 
-画像ファイル名の命名規約や出力先のフォルダ設定は ``.vscode/setting.json`` で行うことができます。
+==== デメリット
 
-[source, json]
-[caption=""]
-.``.vscode/setting.json``
-----
-{
-    "pasteImage.path": "${currentFileDir}/images",
-    "pasteImage.basePath": "${currentFileDir}/images",
-    "pasteImage.defaultName": "Y-MM-DD-HH-mm-ss"
-}
-----
+* 利用コストが発生する
+** 費用対効果が見込めるか。
+* 予想外のコスト発生しうる。
+** さまざまな利用制限を設定可能。通知が来て上限値を上げることができる
+* オフラインでweb browserで開発できない。
+** ローカルにcloneしてvsocdeでコード書いて後でプッシュとかはできる。
+* 開発運用者のネットワークが遅いと反応が鈍い。
 
-なお、Asciidoc 拡張にも同様の機能（menu:VS Code[F1 キー押下 > AsciiDoc: Paste Image]）がありますが、現在のところ Paste Image 拡張のほうがファイル名などの設定が柔軟であることから、本手順では Paste Image を紹介しています。
+=== ライセンスと費用感
 
-AsciiDoc 版の Paste Image には現在の開いている Asciidoc の ``:imagesdir:`` 属性を見て設定無しでファイル配置場所を決定してくれるなど優れた機能もありますので、それぞれの機能を確認し必要に応じて使い分けると良いでしょう。
+==== VM
 
-.クリップボード連携のシステムインターフェース
-****
-VS Code Paste Image 拡張のクリップボード連携のシステムインターフェースは次のシェルスクリプトで実装されています。
+* 2core 4GB $0.18/hour
+* __**4core 8GB $0.36/hour**__
+* 8core 16GB $0.72/hour
+* ・
+* ・
 
-[source, bash]
-----
-$ ls -laF ~/.vscode/extensions/mushan.vscode-paste-image-1.0.4/res
-..snip..
--rw-r--r-- 1 hiromasa hiromasa   492  6月 26  2021 linux.sh
--rw-r--r-- 1 hiromasa hiromasa  1540  6月 26  2021 mac.applescript
--rw-r--r-- 1 hiromasa hiromasa   680  6月 26  2021 pc.ps1
-..snip..
-----
+==== ストレージ
 
-Asciidoc 拡張も ``~/.vscode/extensions/asciidoctor.asciidoctor-vscode-2.9.8/res`` 配下に同様のファイルがあります。これらの拡張のクリップボード連携は各 OS のクリップボード操作のコマンドを呼び出して動作しています。動作をご理解の上活用してください。
+$0.07 GB/month
 
-また、WSL2 Ubuntu と VS Code の WSL Remote 拡張を使った環境では、Paste Image は Windows - Ubuntu 間のクリップボードがそのままでは跨げないためうまく動作しません。
+==== 費用感
 
-これを解決するためのワークアラウンドですが、次のように WSL2 側の Paste Image 拡張のファイルを書き換えると画像のクリップボード連携が動作するようになります。
+===== 前提条件
 
-[source, bash]
-[caption=""]
-.``~/.vscode-server/extensions/mushan.vscode-paste-image-1.0.4/res/linux.sh``
-----
-#!/bin/sh
-# change current directory
-cd `dirname $0`
-# set dist path
-DISTPATH=//wsl.localhost/Ubuntu-22.04 # <1>
-# call Windows PowerShell
-powershell.exe -ExecutionPolicy Bypass -File pc.ps1 ${DISTPATH}$1
-----
-<1> 利用しているディストリビューションのパスを設定する。
+* １人当たりの稼働時間: 160 hour/month
+* VM スペック: 4core 8GB $0.36/hour
+* VM 利用比率: 80%
+* ストレージ利用量: 100GB
+* 開発運用者数: 10名
 
-なお、これは暫定的な方法のため拡張にアップデートがあると修正したファイルが戻って機能しなくなります。また ``-ExecutionPolicy Bypass`` 指定より PowerShell のセキュリティをバイパスして動作させています。ファイルをリードオンリーに指定するなどして、取扱いには注意してください。
-****
+===== 算出値
 
-<<<
+* 月額 69,120円   (6,912 円/人)
+* 年額 829,440円  (82,944 円/人)
 
-==== 統合ターミナルの活用
+==== 請求先と所有権
 
-VS Code には統合ターミナルと呼ばれる VS Code 画面内で使えるターミナルエミュレータが備わっており、エディターを離れることなく文書のビルドが可能です。
+組織か個人のいずれかに設定できる。組織に設定することで請求がまとめて組織にくる。開発運用者は経費申請しなくていい。
 
-.VS Code 統合ターミナルからの文書変換
-[caption="画面. "]
-image::2023-09-20-15-30-52.png[width=60%, pdfWidth=60%]
+* 組織に設定した場合は、請求がまとめて組織に行く。
+* 個人を設定した場合は、請求が個人に行く。個人の場合は 60時間(2core/4GB)の無料枠がある。
 
-統合ターミナルは menu:表示[ターミナル] と操作して開きます。
 
-.VS Code 統合ターミナルの起動
-[caption="画面. "]
-image::2023-09-20-15-26-40.png[width=60%, pdfWidth=60%]
+==== 利用制限
 
-統合ターミナルはキーボードショートカット btn:[Ctrl + @] でも起動可能です。再度、同キーを押下することでクローズするトグル動作となっており、画面を広く使いたい執筆中に活用できます。
+* コンピューティング使用量とストレージ使用量を制限できる。
+* マシンの種類を制限できる。リポジトリ毎に設定可能。
+* アイドルタイムアウトで自動停止できる。デフォルト３０分。再起動は１分程度。
+* ユーザ１人あたりのcodespaces数を制限できる。ストレージ料金の削減に役立つ。
+* 未使用のcodespacesを自動削除できる。ストレージ料金の削減に役立つ。デフォルト３０日
 
-[TIP]
-====
-統合ターミナル内で起動する一般的なシェル環境では、btn:[↑] を押下することで前回入力した履歴が呼び出せます。この操作は文書変換コマンドを再実行する際に便利です。
-====
+#### 開発環境のその他の選択肢
 
-'''
+* 無償のlocal IDEを利用する。
+** VSCodeやeclipse
+** GitHub Codespacesを利用する際のメリットが享受できない。
+** 追加コストが掛からない。
+* OSSのCloud IDEを自身で運用する
+** Gitpodなどが使える自前のクラスタやサーバーで運用する。
+** クラスタやサーバのインフラコストや運用コストに加えて、構築費用が発生する。
+** 規模の経済が適用されるため、中・小規模開発には向かない。
+* その他のSaaS
+** AWS Cloud9
+*** Nativeに統合されているGitHub Codespacesに機能面や利便性で劣る。
+*** **リソース利用料は安い** が総合的には高い。アカウントやネットワーク周り含めて設計が別途発生し構築コストが掛かる。
+** Gitpod Cloud
+*** Nativeに統合されているGitHub Codespacesに機能面や利便性で劣る。
+*** 費用はGitHub Codespacesとほぼ同じ
 
-.その他の Asciidoc 文書編集が可能な統合開発環境
-****
-本文書では VS Code を Asciidoc 文書編集用のエディタとして活用していますが、Eclipse や IntelliJ IDEA といった統合開発環境も Asciidoc を拡張機能でサポートしています。
 
-.IntelliJ IDEA の AsciiDoc Plugin で文書編集している例
-[caption="画像. "]
-image::2023-09-20-18-42-42.png[pdfwidth=100%, width=100%]
+== Codespaces/Copilotデモ
 
-好きな統合開発環境があればプロジェクトフォルダにそれぞれの環境定義を入れ、自分に合った執筆環境を構築してみてください。
-****
-
-<<<
-
-=== 文書のファイル構成
-
-以下に執筆で編集する Asciidoc 文書フォルダ（``src/docs/asciidoc`` 配下）のファイル構成の詳細を示します。
-
-[plantuml, directory-structure-3, svg, pdfwidth=40%, width=390px]
-[caption=""]
-----
-include::puml/directory-structure-3.puml[]
-----
-
-[source]
-[caption=""]
-----
-src/docs/asciidoc/index.adoc # <1>
-src/docs/asciidoc/attribute.adoc # <2>
-src/docs/asciidoc/@style/asciidoctor.css # <3>
-src/docs/asciidoc/@style/pdf-theme.yml # <4>
-src/docs/asciidoc/@font/**/*.ttf # <5>
-src/docs/asciidoc/Chapter{number}/index.adoc <6>
-----
-
-<1> 文書を作成する起点となる Asciidoc 文書です。表紙となる文書のタイトルなどを記載し、その後から章ごとの Asciidoc 文書を ``include`` して構成していきます。
-<2> 文書設定をするためのファイルです。各文書から ``include`` します。
-<3> HTML 出力とプレビュー用のスタイルシートです。文書に合わせて修正できます。
-<4> PDF 文書に変換する際に使われるスタイル定義です。文書に合わせて修正できます。
-<5> PDF 文書に埋め込みされるフォントファイルを配置します。``pdf-theme.yml`` からファイル名で参照されています。TrueType フォント ``.ttf`` が指定できます。
-<6> ``src/docs/asciidoc/index.adoc`` から参照される子文書です。各子文書のフォルダ名は ``Chapter\{number\}`` とします。
-
-本構成を元に執筆したい文書に合わせカスタマイズしていきます。文書ファイルの編集や閲覧は VS Code のリアルタイムプレビューで確認しながら行うと分かりやすいでしょう。
-
-<<<
-
-==== 文書属性定義
-
-``src/docs/asciidoc/attribute.adoc`` では文書のデフォルトキャプション名などの属性値を定義できます。画像挿入時の「図. 」など標準で付与される文字列がありますので、必要に応じて修正します。
-
-[source]
-[caption=""]
-.``src/docs/asciidoc/attribute.adoc``
-----
-..snip..
-:preface-title: まえがき
-:toc-title: 目次
-:appendix-caption: 付録
-:caution-caption: 注意
-:example-caption: 例
-:figure-caption: 図
-..snip..
-----
-
-Asciidoctor で利用可能な属性は次のドキュメントから参照できます。
-
-[quote, asciidoctor.org]
-____
-https://asciidoctor.org/docs/user-manual/#attributes
-
-Attributes are one of the features that sets Asciidoctor apart from other lightweight markup languages. Attributes can activate features (behaviors, styles, integrations, etc) or hold replacement (i.e., variable) content.
-____
-
-==== PDF テーマ定義
-
-``src/docs/asciidoc/@style/pdf-theme.yml`` では PDF 文書のスタイルを定義できます。PDF 文書の紙サイズやマージン、フォント・行送り幅などの設定がありますので、必要に応じて修正します。
-
-PDF テーマの詳細は次のドキュメントから参照できます。
-
-[quote, asciidoctor.org]
-____
-https://docs.asciidoctor.org/pdf-converter/latest/
-
-Asciidoctor PDF Theming Guide
-____
-
-``pdf-theme.yml`` の修正は ``.adoc`` 修正時のビルドで PDF 文書に反映します。``pdf-theme.yml`` の修正だけを反映したい場合は、いずれかの ``.adoc`` 文書に影響のない修正を加えてファイルを更新するか、 ``./gradlew clean`` してからビルドを実行してください。
-
-NOTE: 本手順で採用している Asciidoctor PDF のバージョンは ``1.6.2`` です。日本語禁則処理を正しく動作させるために、現在のところ最新の ``2.3`` にはなっていません。新しい Theming Guide ドキュメントの属性や動作とは乖離している場合があることに注意してください。
-
-<<<
-
-=== 執筆の開始
-
-一通りのサンプル文書の構成確認が終われば、次のような流れで新しい執筆を開始できるでしょう。
-
-. サンプル文書の ``src/docs/asciidoc/Chapter02`` 以降のフォルダの削除を行い見通しを良くする。
-. ``src/docs/asciidoc/index.adoc`` からの 1. で削除した ``Chapter*`` の``include`` を削除する。
-. ``src/docs/asciidoc/index.adoc`` で文書のタイトルや版数などを設定する。
-. ``src/docs/asciidoc/Chapter00/index.adoc`` を空にして目次前に挿入される「はじめに」や「本書の読み方」等の執筆。
-. ``src/docs/asciidoc/Chapter01/index.adoc`` を空にして本編の執筆を開始。
-. 事前に目次案がある場合は、このタイミングで ``Chapter*`` フォルダと対応する ``index.adoc`` を新規作成し、目次案にあった章や節などの大項目のみを準備するのも良い方法です。目次が完成し全体の把握がしやすくなります。
-. ここで一度 ``./gradlew docs`` を行い、想定通りの HTML/PDF 文書が ``docs/`` 内に生成されていることを確認する。外観の修正点があれば、
-** 文書形式の場合は ``src/docs/asciidoc/attribute.adoc`` を調整。
-** PDF テーマの場合は ``src/docs/asciidoc/@style/pdf-theme.yml`` を調整。
-** HTML テーマの場合は ``src/docs/asciidoc/@style/asciidoctor.css`` を調整。
-
-=== 執筆のイテレーション
-
-ここまでの手順で執筆環境が整った後、毎日の執筆の進め方は次のようになります。
-
-. プロジェクトフォルダを VS Code で開く。
-. ``src/docs/asciidocs`` 配下の Asciidoc 文書を VS Code でプレビューしながら執筆する。
-+
-* Chapter が増えた場合は ``src/docs/asciidocs/index.adoc`` に Chapter を追記し、``src/docs/asciidocs/Chapter*/index.adoc`` ファイルを新規追加する。
-* 画像ファイルが必要な場合は、``src/docs/asciidocs/Chapter*/images`` フォルダに追加する。 +
-画像の追加は VS Code の Paste Image 拡張を用いることで、クリップボード経由で自動的に行えます。
-. 文書執筆の一定の区切りをもって ``./gradlew docs`` で文書のビルドを行い、HTML/PDF 文書を ``docs/index.html`` や ``docs/index.pdf`` で推敲する。
-+
-* ``./gradlew docs`` の入力は VS Code の統合ターミナルが使えます。
-. 必要ならばプロジェクトディレクトリを Git などのバージョン管理下として、コミットを行う。
-. 本日の執筆を終え、明日はまた 1. に戻る。
-
-.文書の推敲
-****
-文書の推敲は、iPad などのペンシルデバイスを持つ機械に PDF 文書ファイルを転送して「赤入れ」すると便利です。さらに、Dropbox や OneDrive などのクラウドストレージにファイルを配置すると執筆環境と推敲情報を共有できます。
-
-.iPad の Goodnotes アプリによる PDF 文書の推敲
-[caption="画面. "]
-image::2023-09-13-14-48-50.png[]
-****
-
-<<<
-
-=== 文書の Git 管理
-
-執筆中の文書をインターネット上に配置した Git リポジトリで管理すると次のようなメリットがあります。
-
-- 文書の修正差分、版数管理ができる。
-- 信頼できる場所にバックアップ・情報保全がされる。
-- クラウド環境での執筆が可能になる。
-- 複数環境での執筆、及び共同執筆時にファイルの混乱がなくなる。
-- GitHub Actions などの CI 機能を使い継続的な文書の公開ができる。
-
-本項では Git リポジトリとして GitHub サービスを使うことを例に、文書のプロジェクトファイルを Git 管理する手順を示します。
-
-==== Git クライアントの導入
-
-お使いのコンピュータに Git クライアントが未導入の場合は、次の手順でインストールします。
-
-[source]
-[caption="手順. "]
-.macOS（ターミナルエミュレータで実行）
-----
-brew install git
-----
-
-[source]
-[caption="手順. "]
-.Linux（ターミナルエミュレータで実行）
-----
-# Ubuntu
-sudo apt install git
-----
-
-[source]
-[caption="手順. "]
-.Windows（PowerShell ウインドウで実行）
-----
-winget install --id Git.Git -e --source winget
-----
-
-Git クライアントの導入後、次のドキュメントを参考に GitHub アカウントへの公開鍵設定を行ってください。
-
-[quote, GitHub アカウントへの新しい SSH キーの追加]
-____
-https://docs.github.com/ja/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
-
-新しい (または既存の) SSH キーを使うように GitHub.com 上のアカウントを構成するには、アカウントにキーを追加する必要もあります。
-____
-
-<<<
-
-==== GitHub 上に文書用のリポジトリを作成
-
-GitHub にログインし、各自のホーム画面から menu:Repositories[New] を押下します。
-
-.GitHub の Repositories
-[caption="画面. "]
-image::2023-09-12-12-11-51.png[width=80%, pdfWidth=80%]
-
-Create a new repository 画面で Repository name を入力し、リポジトリが公開（Public）か非公開（Private）かを選択し、最後にページ下にある btn:[Create repository] を押下します。
-
-NOTE: ここではリポジトリ名として `wasm-micro-book` を、公開範囲を執筆者のみが文書ファイルが閲覧・操作が可能となる `Private` を選択しました。なお、公開範囲に Public を指定した場合は、インターネット上の全てのユーザから文書ファイルの読み取りが可能になりますので注意します。
-
-.GitHub の Create a new repository
-[caption="画面. "]
-image::2023-09-12-12-17-12.png[width=80%, pdfWidth=80%]
-
-リポジトリの作成が終わると画面が遷移して "…or create a new repository on the command line" 項が現れます。次項の手順で必要になりますので、表示されたコマンドをクリップボード等に保持します。
-
-.GitHub の Quick setup
-[caption="画面. "]
-image::2023-09-12-12-23-52.png[width=80%, pdfWidth=80%]
-
-==== GitHub 上に文書を初期プッシュ
-
-GitHub リポジトリに文書を配置するため、VS Code で文書が配置されているプロジェクトフォルダを開き、統合ターミナルから以下のコマンドでローカルの Git リポジトリを初期化します。
-
-NOTE: プロジェクトフォルダは、ルートに `gradlew` などの本手順のビルドスクリプトが配置されている構成になっていることを確認します。変換スクリプトやフォルダ構成ごと Git にコミットすることで、いずれの執筆環境でも HTML/PDF 変換処理ができるようになります。
-
-.VS Code 統合ターミナルから Git リポジトリを初期化
-[caption="手順. "]
-[source, bash]
-----
-git init
-git config --local user.name h1romas4 # <1>
-git config --local user.email h1romas4@gmail.com # <2>
-git add .
-git commit -m 'initial commit'
-----
-<1> `h1romas4` 任意の名前に変更。Git コミットログの記載される氏名になります。
-<2> `h1romas4@gmail.com` 同上。Git コミットログに記載されるメールアドレスになります。
-
-ローカルの Git リポジトリの初期化完了後、続けて統合ターミナルで前項「GitHub の Create a new repository」画面でクリップボード等に保持したコマンドを実行し、GitHub リモートリポジトリーにプロジェクトファイル一式をプッシュ操作します。
-
-.VS Code 統合ターミナルから GitHub にプッシュ
-[caption="手順. "]
-[source, bash]
-----
-git remote add origin git@github.com:h1romas4/wasm-micro-book.git # <1>
-git branch -M main
-git push -u origin main
-----
-<1> `h1romas4/wasm-micro-book.git` 部分が前項で作成したリポジトリ名になります。
-
-以上で GitHub リポジトリーへの文書の配置が完了しました。ウェブブラウザーで GitHub リポジトリにアクセスしすると、プッシュした文書ファイルがあることが確認できるでしょう。
-
-==== 修正したファイルのコミット・プッシュ
-
-Git によるファイル管理を始めた後、VS Code 上で文書の編集を行うと修正や追加のあったファイルが左のサイドバーに通知されます。
-
-この修正を Git に反映させるために、btn:[+] で Git 上にステージングし、任意のコミットコメントを記載して btn:[Commit] を押下するコミット操作を行います。
-
-.VS Code のファイル修正通知と Git へのステージング
-[caption="画面. "]
-image::2023-09-12-12-49-52.png[width=50%, pdfWidth=50%]
-
-.VS Code から Git へのコミット
-[caption="画面. "]
-image::2023-09-12-12-51-08.png[width=50%, pdfWidth=50%]
-
-コミットはローカル上の Git に対して行われます。この後 GitHub のリモートリポジトリに反映させるため btn:[Sync Changes] を押下しプッシュ操作を行います。
-
-CAUTION: プッシュ操作を行うまで GitHub リモートリポジトリには文書の修正が反映されません。忘れずに実施してください。操作に慣れるまでは、プッシュ操作後にウェブブラウザで GitHub リポジトリにアクセスしファイルの更新を確認すると良いでしょう。
-
-.VS Code から GitHub Repository へのプッシュ
-[caption="画面. "]
-image::2023-09-12-12-58-10.png[width=50%, pdfWidth=50%]
-
-なお、btn:[Sync Changes] ボタン押下操作の他、統合ターミナルから `git push` コマンドを入力することでも同様の結果が得られます。
-
-.統合ターミナルから `git push` を実行
-[caption="手順. "]
-[source, bash]
-----
-git push
-----
-
-==== 異なる執筆環境での Git 操作
-
-異なる執筆環境から GitHub リポジトリの文書を取得するには次の操作を行います。
-
-その環境で初めて執筆する場合は、GitHub 上のリポジトリをクローンしプロジェクトフォルダを得る。
-
-[source, bash]
-[caption="手順. "]
-----
-git clone git@github.com:h1romas4/wasm-micro-book.git # <1>
-----
-<1> `h1romas4/wasm-micro-book.git` 部分が前項で作成したリポジトリ名になります。
-
-別の執筆環境からの修正（プッシュ）を取得するために `git pull` 操作を行う。
-
-.統合ターミナルから `git pull` を実行
-[source, bash]
-[caption="手順. "]
-----
-git pull
-----
-
-[NOTE]
-====
-個人の執筆活動における Git 初歩としては「執筆開始前に必ず `git pull`」「執筆区切りで `commit` と `push`」 と覚えることで十分機能するはずです。
-====
-
-==== Git による文書の差分比較
-
-Git 管理された文書ファイルはコミットごとに履歴が取得され、各履歴ごとの差分比較が可能です。
-
-VS Code では統合ターミナルと同列のパネルに配置されたタイムラインから履歴をダブルクリックすることで、Git コミットごとの修正前後の比較ができます。
-
-.VS Code タイムラインパネル
-[caption="画面. "]
-image::2023-09-21-18-08-23.png[pdfwidth=80%, width=80%]
-
-タイムラインには標準で Git の履歴とともに、ファイル上書き保存ごとの修正差分も表示されます。状況に応じてパネル右上のフィルター項目からそれぞれの表示可否を選択してください。
-
-.VS Code タイムラインパネルのフィルター
-[caption="画面. "]
-image::2023-09-21-18-12-59.png[pdfwidth=50%, width=50%]
-
-また Git コミット時に使うソース管理パネルでも、ファイルをダブルクリックすることでコミット前後の差分が表示され修正内容を確認できます。
-
-.VS Code ソース管理パネル
-[caption="画面. "]
-image::2023-09-21-18-31-16.png[pdfwidth=80%, width=80%]
-
-[NOTE]
-====
-もし共同著者間での文書マージ操作等、より高度な Git の操作が必要になってきた場合は、ウェブサイトや書籍から Git についての優れたドキュメントが得られます。
-====
-
-=== クラウド環境による執筆
-
-クラウド開発環境である https://www.gitpod.io/[Gitpod] や GitHub の https://github.co.jp/features/codespaces[Codespaces] を活用すると、ローカル環境の準備なしにウェブブラウザだけで執筆と HTML/PDF 文書のビルドが可能です。このことから、サブマシンや iPad などタブレット端末でも執筆活動が行えます。
-
-[quote, Gitpod]
-____
-https://www.gitpod.io/
-
-The developer platform for on-demand cloud development environments. Create software faster and more securely.
-____
-
-[quote, Codespaces | GitHub]
-____
-https://github.co.jp/features/codespaces
-
-超高速で構築するクラウド開発環境
-____
-
-==== Gitpod
-
-Gitpod クラウド上での執筆にあたっての条件は次のとおりです。
-
-- 文書ファイル一式を GitHub、GitLab、Bitbucket のいずれかに配置する必要があります。（プライベートリポジトリも利用可能です）
-- 2023-07 現在 Gitpod の無料枠は 50時間/月です。最新情報は https://www.gitpod.io/pricing から確認できます。
-
-準備ができれば、次の要領で URL を作成しウェブブラウザでアクセスするとクラウド環境が起動します。
-
-[source]
-----
-https://gitpod.io/new/#https://github.com/h1romas4/asciidoctor-gradle-template <1>
-----
-
-<1> URL の先頭に `https://gitpod.io/new/#` という Gitpod の URL を前置し、その後の `https://github.com/h1romas4/asciidoctor-gradle-template` 部分に自身の GitHub リポジトリ URL を付与してウェブブラウザの URL 欄に貼り付けます。
-
-NOTE: 上記記載通りの URL にアクセスすると本手順のリポジトリで Gitpod クラウドを試用できます。なお、リポジトリには筆者以外の書き込み権がついていないため Git への文書修正操作は試せません。
-
-[caption="画像."]
-.ウェブブラウザ上で起動した VS Code と Asciidoc 拡張（Gitpod）
-image::2023-07-03-14-28-22.png[]
-
-本手順向けの VS Code 用の推奨拡張が自動導入されるように設定されていますので、特に操作をせずそのまま文書の執筆が開始できます。
-
-また合わせて、統合ターミナルから文書のビルドができるようコンテナ環境も自動設定されます。ターミナルに以下の表示が出力されれば準備完了です。同ターミナルで `./gradlew docs` することによりローカル環境と同様に HTML/PDF の文書変換が開始されます。
-
-[source, bash]
-----
-#
-# asciidoctor-gradle-template
-#
-# Setup Done! Build document here. (./gradlew docs)
-#
-# It will build correctly, if the following conditions 'OK'
-#
-#  Java(openjdk): OK
-#  Dialog Font(Noto Sans CJK JP): OK
-#  LANG(ja_JP.UTF-8): OK
-#
-----
-
-NOTE: これらの Gitpod 向けの設定は `.gitpod.yml` ファイルで定義されています。
-
-==== Codespaces
-
-Codespaces クラウド上での執筆にあたっての条件は次のとおりです。
-
-- 文書ファイル一式を GitHub に配置する必要があります。（プライベートリポジトリも利用可能です）
-- 2023-07 現在 Codespaces の無料枠はおおよそ 60時間/月ほどです。最新情報は各自の GitHub アカウント https://github.com/settings/billing の Codespaces 項から確認できます。
-
-準備ができれば、GitHub サイトにログインした上でファイル一式をコミットしたリポジトリを開き menu:Code[Codespaces > Create codespace on ブランチ名] を押下します。
-
-image::2023-09-11-18-58-47.png[width=80%, pdfWidth=80%]
-
-NOTE: https://github.com/h1romas4/asciidoctor-gradle-template にアクセス後、上記の操作を行うと、本手順のリポジトリで Codespaces クラウドを試用できます。なお、リポジトリには筆者以外の書き込み権がついていないため Git への文書修正操作は試せません。
-
-<<<
-
-ボタン押下後コンテナのビルドに画面が遷移し、完了するとウェブブラウザー上で VS Code が起動します。
-
-[caption="画像."]
-.ウェブブラウザ上で起動した VS Code と Asciidoc 拡張（Codespaces）
-image::2023-09-11-19-06-20.png[]
-
-前項の Gitpod と同様に VS Code の拡張は自動導入され、文書のビルド用のコンテナ環境も構築されます。コンテナ環境の構築中は統合ターミナルに以下のような表示がされ、終了とともに自動的に閉じられます。
-
-[source, bash]
-----
-Use Cmd/Ctrl + Shift + P -> View Creation Log to see full logs
-✔ Finishing up...
-   Running postCreateCommand...
- > bash .devcontainer/build-codespaces-container.sh
-----
-
-文書のビルドは本処理が終了後、新しい統合ターミナルを開き環境が日本語設定になっていることを確認の上 `./gradlew docs` を実行します。
-
-[source, bash]
-----
-$ echo $LANG
-ja_JP.UTF-8 # <1>
-$ fc-match Dialog
-NotoSansCJK-Regular.ttc: "Noto Sans CJK JP" "Regular" # <2>
-$ ./gradlew docs # <3>
-# ..snip..
-BUILD SUCCESSFUL in 3m 19s
-----
-<1> `ja_JP.UTF-8` になっていること
-<2> `Noto Sans CJK JP` になっていること
-<3> 文書のビルドを開始
-
-統合ターミナルの環境が日本語設定になっていない場合、文書中のダイアログ記法で生成された図表の日本語出力が崩れる場合があります。
-
-クラウド環境初期後に自動的に開かれる統合ターミナルは日本語設定が反映していないため、文書のビルドを行う場合は混乱がないように `exit` コマンドで一旦閉じた上で統合ターミナルを再起動すると良いでしょう。
-
-NOTE: Codespaces 向けの設定は `.devcontainer/devcontainer.json` 及び `.devcontainer/build-codespaces-container.sh` ファイルで定義されています。
-
-=== クラウド環境でのファイル保存と執筆の再開
-
-クライド環境上での文書ファイルの保存は、基本的に Git のコミット・プッシュ操作になります。通常の btn:[Ctrl + s] のファイル保存操作とともに、一区切りの間隔で Git のコミットとプッシュの操作を行うのを忘れないようにしてください。
-
-CAUTION: Git プッシュの操作を行わずにウェブブラウザーを閉じてしまった場合はファイルが失われる可能性があります。十分注意をしてください。
-
-とは言ってもウェブブラウザのタブは閉じやすいもの。もしうっかり閉じてしまった場合は、GitHub にログインした状態で以下の URL にアクセスしてください。
-
-.Gitpod の場合
-https://gitpod.io/workspaces
-
-image::2023-09-11-20-13-04.png[width=80%, pdfWidth=80%]
-
-.Codespaces の場合
-https://github.com/codespaces
-
-image::2023-09-11-20-10-35.png[width=80%, pdfWidth=80%]
-
-NOTE: クラウド上で起動していた環境は最終利用時からある一定期間（数日）は残ります。この動作を利用して未コミット・プッシュのファイルを取り戻せます。
-
-一覧画面にはこれまで使っていた環境が表示されますので、選択して「開く」操作をしてください。どちらも右の三点リーダメニューより、Gitpod では btn:[Open]、Codespaces では menu:Open in[Open in browser] を押下すると、未プッシュのファイルとともに環境が復元します。
-
-また、コミット・プッシュ済みに関わらず、翌日執筆を再開する際もこれらの画面から環境をリオープンします。クラウドのリソース削減になるとともに、これまでの VS Code の操作状態が維持されているため時間の短縮にもなります。
-
-<<<
-
-.VS Code の Zen Mode
-****
-VS Code には執筆に集中したい場合に、不要な UI を隠しながらフルスクリーン表示をする Zen Mode があります。標準のキーアサインでは btn:[Ctrl + k, z] でモードが遷移し、再度同じ操作もしくは btn:[Esc] 2回押下で元の画面に戻ります。
-
-image::2023-07-02-15-09-43.png[pdfwidth=84%, width=90%]
-
-Zen Mode は、VS Code や OS の不要なコンポーネントが見えなくなり画面が広く使えること、また思考を遮る要素がなくなることから快適な執筆をする上での良いツールとなることでしょう。
-****
-
-<<<
-
-=== GitHub Actions によるビルド
-
-リポジトリに含まれるファイル `.github/workflows/gradle.yml` 及び `.github/workflows/release.yml` は GitHub サーバ上で文書のビルドテスト、及び `.tar.gz` 形式での HTML/PDF 文書のリリースを行うための定義ファイルです。
-
-これらのファイルを文書ファイルとともに各自のプロジェクト GitHub リポジトリにコミットすることで、文書変換とファイルリリースが git の操作を契機として GitHub サーバ上で自動的に動作するようになります。
-
-[NOTE]
-====
-本項「GitHub Actions によるビルド」機能の利用は必須ではありません。大人数で継続的に執筆を行いたいケースなどに採用してみてください。HTML/PDF 変換処理の自動化やファイルリリースの版数管理で大きな力を発揮することでしょう。
-====
-
-==== 文書ファイルの変換テストと検査（gradle.yml）
-
-git による main ブランチへの push 操作を契機に自動的に動作する文書変換テストです。macOS、Linux、Windows のそれぞれの環境で、Java 11/17/21 においてビルドが試行され、一定の検査が行われます。
-
-環境はマトリクスになっており、計 9 環境でのテストでビルドが正しいかが確認され GitHub Actions 上のログやメール通知で結果が得られます。自分の執筆環境以外のさまざまな環境で、文書のビルドが実行できることへの確信が持てるはずです。
-
-検査に関しては、文書が生成されたかを基本として確認を行い、文書の内容自体に対しては行われません。
-
-- HTML、PDF 文書ファイルが生成されるか。
-- 後述の asciidoctor-diagram による .svg 画像生成が動作したか。
-- GitHub Actions ログへのファイル数、一覧の出力。
-
-検査は以下の部分で行われます。文書に合わせたさらなる検査が必要な場合はシェルスクリプトでカスタマイズしてください。
-
-.`.github/workflows/gradle.yml`
-[caption=""]
-[source, yml]
-----
-- name: Check
-  shell: bash
-  run: |
-    find docs/ -type f -ls
-    find docs/ -type f -ls | wc
-    # test asciidoctor-diagram (If you are not using diagram, comment out the next)
-    find docs/ -type f -ls | egrep 'svg$' # <1>
-    # test asciidoctor
-    file docs/index.pdf | grep PDF
-    file docs/index.html | grep HTML
-----
-<1> asciidoctor-diagram を使った .svg 図表が生成されているかの検査。文書中で使用していない場合は削除するか、コメントアウトしてください。
-
-また 次の部分で PDF 文書のメタデータの出力を行うサンプルを組み込んでいます。PDF 文書に不要なメタデータが含まれていないか等の確認が行えます。
-
-.`.github/workflows/gradle.yml`
-[caption=""]
-[source, yml]
-----
-- name: Output PDF information (Ubuntu)
-  if: startsWith(matrix.os, 'ubuntu')
-  run: |
-    echo "# PDF information"
-    ./gradlew -q checkPdfInfo # <1>
-    echo "# URLs in document"
-    pdfinfo -url docs/index.pdf | tail -n +2 | awk '{ print $3 }' | sort | uniq # <2>
-----
-<1> PDF 文書のメタ情報を出力。
-<2> ``pdfinfo`` コマンドで PDF 文書中に含まれる URL 文字列を抽出。
-
-NOTE: ``pdfinfo`` コマンド部分は Ubuntu ビルドのみ対応しています。また、メタ情報に関する合否確認は組み込んでいませんので必要であればカスタマイズしてください。
-
-なお、文書が問題なく変換ができたことの証となる「バッジ」を以下のようにすることで画像として取得可能です。正常の場合はグリーンに、失敗の場合は赤で表示されます。
-
-[source]
-----
-https://github.com/[ユーザ名]/[リポジトリ名]/workflows/Build/badge.svg
-----
-
-具体的には、本手順のリポジトリの GitHub 向けの README.adoc は次のようになっています。
-
-[source]
-----
-image::https://github.com/h1romas4/asciidoctor-gradle-template/workflows/Build/badge.svg[]
-----
-
-image::2023-09-06-10-41-11.png[pdfwidth=60%]
-
-==== 文書ファイルの自動リリース（release.yml）
-
-git のバージョンタグを push する操作を契機として、GitHub のリリースページに GitHub Actions 上の環境で変換処理された HTML/PDF 文書をアーカイブファイルとして GitHub のダウンロードページにリリースします。
-
-.GitHub のリリースページに掲載された変換後の文書
-[caption="画面. "]
-image::2023-09-24-16-11-46.png[pdfwidth=80%, width=80%]
-
-ファイル名の `by-*` 以下の部分にはビルドした環境名が `by-windows-latest-java-11` や `by-macos-latest-java-17` のような形で付与されます。通常はひとつの環境でビルドした文書だけリリースできれば十分ですので、利用する時は次のマトリクスを変更してビルド環境を絞ってください。
-
-.`.github/workflows/release.yml`
-[source, yml]
-[caption=""]
-----
-jobs:
-  build:
-    strategy:
-      matrix:
-        os: [ ubuntu-22.04, windows-latest, macos-latest ] # <1>
-        java: [ '11', '17', '21' ] # <2>
-----
-
-<1> `os: [ windows-latest ]` とすると Windows のみでビルドされます。
-<2> `java: [ '11' ]` とすると Java 11 のみでビルドされます。
-
-[NOTE]
-====
-設定する OS や Java のバージョンは、メインで使われている執筆環境と合わせると良いでしょう。
-
-本文書はテンプレートとして多くの環境での動作を担保するため、Ubuntu | Windows | macOS 上のそれぞれの Java 11/17/21 の計 9 環境で文書のビルドと確認を実施しています。
-====
-
-リリースされる文書のファイル名や付与されるバージョン番号については、スクリプトの次の部分で指定されています。執筆する文書に合わせて変更してください。
-
-.`.github/workflows/release.yml`
-[source, yml]
-[caption=""]
-----
-- name: Set archive attribute
-  id: get-attr
-  shell: bash
-  run: |
-    # document filename
-    echo "doc-name=asciidoctor-gradle-book" >> $GITHUB_OUTPUT # <1>
-    # document version from git tag
-    echo "version=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT # <2>
-----
-<1> `asciidoctor-gradle-book` 部分が出力されるファイル名に前置されます。
-<2> Git のタグ名がそのままバージョン名となります。
-
-本リリースの機能を使い頒布や出版時にタグを打つことで、その時点のファイル断面がダウンロード可能な形で永続化できます。文書の版管理に活用してください。

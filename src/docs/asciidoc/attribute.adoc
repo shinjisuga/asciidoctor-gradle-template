@@ -3,6 +3,7 @@
 :doctype: book
 :preface-title: まえがき
 :toc-title: 目次
+:toc: left
 :appendix-caption: 付録
 :caution-caption: 注意
 :example-caption: 例

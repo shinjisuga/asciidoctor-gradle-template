@@ -1,0 +1,16 @@
+@startuml diag-sequence-sample1
+skinparam monochrome true
+hide footbox
+participant "ユーザ追加申請者" as requester
+participant "ユーザ追加設定作業者" as worker
+entity "チケット管理" as ticketmanager
+participant "承認者" as applover
+participant "GitHub" as github
+
+== ユーザ追加 ==
+requester -> github: 設定値変更とプルリクエスト作成
+github -> applover: 通知
+applover -> github: 承認＆マージ
+github -> requester: 作業完了通知
+
+@enduml

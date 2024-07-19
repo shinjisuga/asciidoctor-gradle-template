@@ -1,400 +1,215 @@
 include::../attribute.adoc[]
 
-== ダイアグラム記法
+== トイルとの闘い方
 
-ダイアグラム記法は、図表をソースコードから出力できる特別なマークアップです。Asciidoc と同様に文書ファイル中のテキスト形式で "描ける" ことから、修正や差分管理がしやすいという利点があります。
 
-本項では **PlantUML** と **ditaa** ダイアグラム記法を用いて、技術文書で使われやすい表現のいくつかの記述例を示します。
+=== トイルを知る
 
-文書のビルドではダイアログ記法をサポートする **asciidoctorj-diagram** が有効になっており、PlantUML と ditta ダイアグラム記法を追加の操作無しで使えます。また、PDF 出力時に日本語が化けないよう自動的にフォントパッチが適用されるよう構成されています。
+トイルとは、手作業、繰り返される、自動化が可能、戦術的、長期的な価値がない、サービスの成長に比例して増加する、といった特徴を持つ作業です
 
-Asciidoc 文書内でダイアグラムを SVG ベクター画像で出力する指定は次のようになります。
+トイルと見なされるすべてのタスクがこれらすべての属性を備えているわけではありませんが、作業が次の説明の 1 つ以上に当てはまるほど、トイルである可能性が高くなります。
 
-[source]
------
-[ダイアグラム種類, 出力ファイル名, svg, pdfwidth=70%, width=480px] // <1> <2>
-----
-// ダイアグラム記法のソースコード
-----
------
-<1> ダイアグラム種類には ``plantuml`` か ``ditta`` を指定する。
-<2> ``pdfwidth`` は PDF 紙面に対しての比率指定、``width`` は HTML 上の幅比率もしくはピクセル（``px``）で指定する。
+マニュアル::
+これには、何らかのタスクを自動化するスクリプトを手動で実行するなどの作業が含まれます。スクリプトを実行する方が、スクリプト内の各ステップを手動で実行するよりも速いかもしれませんが、人間がそのスクリプトを実行するのに費やす実作業時間 (経過時間ではありません) は、依然として労力を要する時間です。
 
-CAUTION: 出力ファイル名は `images` フォルダ内で一意になるように設定してください。特にダイアログ記法を別の場所からコピーアンドペーストした場合は要チェックです。同名ファイル名が指定された場合は上書きされる動作になります。
+反復的::
+初めて、あるいは 2 回目にタスクを実行する場合、この作業はトイルではありません。トイルとは、何度も繰り返す作業です。新しい問題を解決したり、新しい解決策を考案したりする場合、この作業はトイルではありません。
 
-次項から PlantUML や ditta 記法を使って描いた実際のダイアグラム図表とソースコードを紹介します。コピーアンドペーストして使いやすいよう各ダイアグラム内で頻出する記法をなるべくピックアップする形で描いています。作成したい図表と似たようなものからアレンジして使うと良いでしょう。
+自動化可能::
+機械が人間と同じように仕事をこなせる場合、あるいはその仕事の必要性を設計によって排除できる場合、その仕事はトイルである。その仕事に人間の判断が不可欠である場合、その仕事はトイルではない可能性が高い。
 
-PlantUML と ditta 記法の詳細な仕様については、次のドキュメントから得られます。
+戦術::
+トイルは、戦略主導でプロアクティブというよりは、割り込み主導でリアクティブです。アラートの処理はトイルです。この種の作業を完全になくすことはできないかもしれませんが、最小限に抑えるために継続的に取り組む必要があります。
 
-[quote, PlantUML]
-____
-https://plantuml.com/ja/
+永続的な価値がない::
+タスクを完了した後もサービスが同じ状態のままである場合、そのタスクはおそらくトイルと言えます。タスクによってサービスが永続的に改善された場合、たとえレガシー コードや構成を調べて整理するなどの単調な作業が多少含まれていたとしても、それはトイルと言えません。
 
-PlantUML in a nutshell
-____
+サービスの成長とともに直線的に増大する::
+タスクに関連する作業がサービス サイズ、トラフィック量、またはユーザー数に応じて直線的に増加する場合、そのタスクはおそらくトイルです。理想的に管理および設計されたサービスは、リソースを追加するための 1 回限りの作業を除き、追加作業なしです。
 
-[quote, ditaa]
-____
-https://ditaa.sourceforge.net/
+==== トイルの例
+- 割り当てリクエストの処理
+- データベース スキーマ変更の適用
+- 重要性の低いモニタリング アラートの確認
+- プレイブックからのコマンドのコピーと貼り付け
 
-DIagrams Through Ascii Art by Stathis Sideris
-____
+==== 分析の仕方
 
-<<<
+* レベル1
+** ヒアリング
+* レベル2
+** アンケート
+* レベル3
+** 機械的な計測とトラッキングルール整備
 
-=== シーケンス図
+== トイルとの闘いを始める
 
-シーケンス図を PlantUML ダイアグラム記法で記述します。
+=== ヒアリング
+小さなテーブルでレベル１のヒアリングから始めましょう。
+対象者にトイルが何かを説明したうえで、３つのトイルを教えてもらいましょう。
 
-[source]
------
-[plantuml, diag-sequence-sample2, svg, pdfwidth=70%, width=70%]
+この段階では軽量ということにこだわってください。ここで几帳面になりすぎてもほとんど意味はありません。多数の詳細データの取得が必要となれば、むしろチームの負担が大きくなり、 **必要以上に細かく管理されていると感じさせ苦痛** になります。
+
+ヒアリングによりいくつかの代表的なトイルが抽出されます。
+
+=== グルーピング
+以下の観点で作業をグルーピングします。
+
+作業の種類:: （割り当ての変更、本番環境へのリリースの移行、ACL の更新など）
+
+作業の難易度:: 容易（1 時間未満）、普通（数時間）、困難（数日）（経過時間ではなく実際の作業時間で判断）
+
+
+=== ターゲットを決める
+
+==== ファーストターゲット
+
+自動化が容易そうで、作業の種類単位あたりの数が多いものを選ぶと効果的です。
+
+作業の種類単位あたりの数が多い::
+同じやり方で対応できる可能性があります。最初のやり方を考えるコストが高いですが、同じやり方で類似作業を減らすことは簡単です。
+
+自動化が容易そう::
+ほとんど行わないタスク（新しいロケーションへのサービスのデプロイなど）の自動化は難しい場合があります。
+
+TIP: 自分たちのみならず、関係者が楽になるものを選ぶとより効果的ですが、チームを跨ぐコミュニケーションが発生し円滑に進まない可能性があります。
+
+==== 施策の実施と効果ヒアリング
+施策を実施し、効果をヒアリングします。
+
+== 参考
+
+- https://sre.google/sre-book/eliminating-toil/[トイルの削減]
+
+- https://cloud.google.com/blog/ja/products/gcp/identifying-and-tracking-toil-using-sre-principles[SRE の原則に沿ったトイルの洗い出しとトラッキング]
+
+=== ヒアリング内容の例
+
+
+自動化できるのにそうしていないトイルがチーム内にありますか。ある場合は、トイルの内容と作業時間の概算値（４週間あたり）を教えてください::
+
+自由回答
+
+
+=== アンケート内容の例
+
+どのくらいの時間をトイルに費やしましたか。全体に占めるおおよその割合を、過去 4 週間の平均値でお答えください。::
+0～100%
+
+トイルに費やした時間の長さについてどの程度満足していますか。::
+非常に不満 / 普通 / まったく問題ない
+
+トイルの発生源として多いものを 3 つ教えてください。::
+
+オンコール対応 / 割り込み / プッシュ / 許容量 / その他
+
+四半期目標に長期のエンジニアリング プロジェクトが含まれていますか。::
+
+はい / いいえ
+
+「はい」の場合、どのくらいの時間をエンジニアリング プロジェクトに費やしましたか。全体に占めるおおよその割合を、過去 4 週間の平均値でお答えください（概算値でかまいません）。::
+
+0～100%
+
+自動化のためのトイルに長期プロジェクトの作業時間を奪われるため、自動化できるのにそうしていないトイルがチーム内にありますか。ある場合は、トイルの内容と作業時間の概算値（４週間あたり）を教えてください::
+
+自由回答
+
+=== 機械的な算出とトラッキングルール例
+
+トラッキングルール::
+チケット作成時に作業種類ラベルを付ける。完了ステータスにする際に作業時間を入力する。（経過時間ではなく実際の作業に掛かった時間）
+
+TIP: トラッキングは反発を受けやすくやりたがらない傾向にあるので、目的をしっかりと伝える。
+
+機械的な算出（チケット）::
+チケットの集計クエリ作成
+
+機械的な算出（通知数）::
+後続作業の無いアラートの発報数。
+
+機械的な算出（コマンドの実行数）::
+踏み台などのコマンド実行数をカウンティングする。
+
+== 事例
+
+=== プロジェクト概要
+
+* 金融業
+* プロダクションチームが利用する基盤開発
+* スクラム開発
+* 顧客＋ULS＋ベンダーの混成チーム
+** サポートチームをEmbedded SREと呼んでいた。チームと言っても人がいなくて一人。立ち上げから参画。
+** 本体が緑で、 Platform Engineering とSite Reliability Engineering 領域を兼務
+** 二つのStream-alined teamsは、別のプロジェクト
+
+image::team.drawio.png[]
+
+=== 背景
+* 金融ならではの権限分離や統制の強さにより、煩雑で反復的な作業が発生していた。
+** 開発者は本番環境アカウントにログインできない
+** 本番アクセスには申請承認・監査証跡の保管。キーボードのタイピング内容まで保管。
+** マネコンからのリソース変更は原則できない。
+** CUI操作のみ許容されている踏み台が存在し、申請承認を得て利用できる
+** 踏み台は基本的に存在しておらず申請後に作成。終わったら権限破棄と合わせて踏み台も破棄。
+** 本番データアクセスはさらに複雑な手続きが必要
+
+> レトロスペクティブで何度も話題にあがるが、対処療法的な改善は限界だった。
+
+=== ヒアリングワークショップ
+* ホワイトボードにトイルを案出し
+** 権限昇格申請に基づく一連の作業
+** 持ち出し申請に基づく一連の作業
+** アカウント払い出し
+** 新規リポジトリ作成
+* 最も時間が掛かる内容に投票
+** ★権限昇格申請に基づく一連の作業★
+
+=== 設計
+
+image::before-architecture.drawio.png[]
+
+[plantuml, diag-sequence, svg, pdfwidth=70%, width=70%]
 [caption=""]
 ----
-include::puml/diag-sequence-sample2.puml[]
-----
------
-
-[plantuml, diag-sequence-sample2, svg, pdfwidth=70%, width=70%]
-[caption=""]
-----
-include::puml/diag-sequence-sample2.puml[]
+include::./puml/diag-sequence.puml[]
 ----
 
-.PlantUML ダイアグラムのリアルタイムプレビュー編集
-****
-本手順の VS Code の推奨プラグインとなっている PlantUML 拡張（``jebbs.plantuml``）を使うと、PlantUML のダイアグラム記法も VS Code 上でリアルタイムプレビューできます。
+image::/workspaces/asciidoctor-gradle-template/docs/Chapter04/images/diag-sequence.svg[]
+
+=== 効果測定
+* ヒアリング
+** 作業なくなった！
+
+=== レトロスペクティブ
+* 計測して継続的にやろう
+
+=== 決まったこと
+* 運用業務チケットにラベル付与ルール
+** アラート対応の擬陽性判断
+** 問い合わせ対応
+** ユーザ追加・改廃
+** 踏み台起動停止
+** etc
+* ラベルごとに平均時間を設定
+* チケットの数で平均作業時間算出
+* レトロスペクティブの冒頭
+** ユーザ追加・改廃チケット20個 x 8 = 160分
+** 踏み台起動停止チケット5 x 5 = 25分
+** アラート対応の擬陽性判断 チケット5個 x 10分 = 50分
+** 対応要否検討
+* 同じスキームに乗るものから優先対応
+
+=== アフター
+
+image::after-architecture.drawio.png[]
+
+* 他にやったこと
+** GitHub の terraform化、コードオーナー設定、ブランチプロテクションルール
+*** ユーザ、チームの追加・改廃は 申請者がプルリク出す
+*** 基盤チームは承認
+*** マージで反映
+** 計測自体のダッシュボード化
+*** クエリ書いてビュー設定
+** etc
 
-プレビュー処理をするために必要な PlantUML サーバは Docker コンテナで起動すると便利でしょう。なお、Gradle による文書のビルドでは内蔵の PlantUML ライブラリが使われますので本サーバーが起動している必要はありません。
-
-[source, bash]
-----
-docker run -d --rm -p 8080:8080 plantuml/plantuml-server:jetty
-----
-
-`.vscode/setting.json` は次のようにポート ``8080`` で PlantUML サーバが起動されることを期待して構成してあります。
-
-[source, json]
-[caption=""]
-.`.vscode/setting.json`
-----
-{ "plantuml.server": "http://localhost:8080" }
-----
-
-文書で使う PlantUML ダイアグラムを `.puml` 拡張子で保存することで Asciidoc と同様にプレビューアイコンが表示され、プレビュー画面ではリアルタイムに `.puml` ファイルの修正が反映されます。
-****
-
-<<<
-
-=== フォルダ・ファイルツリー
-
-フォルダ・ファイルツリーを PlantUML の Salt 記法で記述します。
-
-[source]
------
-[plantuml, diag-salt-sample1, svg, pdfwidth=30%, width=280px]
-[caption=""]
-----
-include::puml/diag-salt-sample1.puml[]
-----
------
-
-[plantuml, diag-salt-sample1, svg, pdfwidth=30%, width=280px]
-[caption=""]
-----
-include::puml/diag-salt-sample1.puml[]
-----
-
-<<<
-
-=== 数式
-
-数式を PlantUML の AsciiMath 記法で記述します。
-
-[source]
------
-[plantuml, math-sample1, svg, pdfwidth=70%, width=70%]
-[caption=""]
-----
-include::puml/math-sample1.puml[]
-----
------
-
-[plantuml, math-sample1, svg, pdfwidth=70%, width=70%]
-[caption=""]
-----
-include::puml/math-sample1.puml[]
-----
-
-'''
-
-.PlantUML の Salt 記法のフォントサイズ
-****
-Salt は現在のところ残念ながらフォントサイズの指定ができません。このため任意のフォントサイズにするためには出力画像の ``pdfwidth`` と ``width`` を設定して算出する必要があります。
-
-[source]
-----
-@startsalt
-<style>
-saltDiagram {
-  FontSize 10 // <1>
-}
-</style>
-{
-{T
- + <&folder> wp-admin
-}
-}
-@endsalt
-----
-
-<1> 未実装で効果がない
-****
-
-<<<
-
-=== ブロック図
-
-ブロック図を ditaa 記法で記述します。
-
-NOTE: ditta 内で日本語を使う場合は、表示ずれを防ぐため半角スペースなどで文字数を調整する必要があります。また、ドロップシャドー ``shadows`` 設定は HTML 版に対してのみ有効で、現在のところ PDF 版に対しては効果がないようです。
-
-[source]
------
-[ditaa, diag-ditaa-block, svg, shadows=true, separation=true, pdfwidth=70%, width=70%]
-[caption=""]
-----
-include::ditaa/diag-ditaa-block.txt[]
-----
-
------
-
-[ditaa, diag-ditaa-block, svg, shadows=true, separation=true, pdfwidth=70%, width=70%]
-[caption=""]
-----
-include::ditaa/diag-ditaa-block.txt[]
-----
-
-<<<
-
-[source]
------
-[ditaa, diag-ditaa-block-2, svg, shadows=true, separation=true, pdfwidth=70%, width=70%]
-[caption=""]
-----
-include::ditaa/diag-ditaa-block-2.txt[]
-----
-
------
-
-[ditaa, diag-ditaa-block-2, svg, shadows=true, separation=true, pdfwidth=70%, width=70%]
-[caption=""]
-----
-include::ditaa/diag-ditaa-block-2.txt[]
-----
-
-<<<
-
-=== メモリーマップ
-
-メモリーマップを ditaa 記法で記述します。
-
-[source]
------
-[ditaa, diag-ditaa-memory-map, svg, shadows=true, separation=false, pdfwidth=70%, width=70%]
-[caption=""]
-----
-include::ditaa/diag-ditaa-memory-map.txt[]
-----
------
-
-[ditaa, diag-ditaa-memory-map, svg, shadows=true, separation=false, pdfwidth=70%, width=70%]
-[caption=""]
-----
-include::ditaa/diag-ditaa-memory-map.txt[]
-----
-
-<<<
-
-=== ネットワーク構成図
-
-ネットワーク構成図を PlantUML の nwdiag で記述します。
-
-[source]
-[caption=""]
-.``diag-nwdiag-network1.puml`` - https://github.com/h1romas4/asciidoctor-gradle-template/blob/master/src/docs/asciidoc/Chapter04/puml/diag-nwdiag-network1.puml[ソース] より簡略化
------
-[plantuml, diag-nwdiag-network1, svg]
-----
-@startuml diag-network1
-<style>
-nwdiagDiagram {
-    FontSize 14
-    group {
-        BackGroundColor cadetblue
-    }
-}
-</style>
-
-nwdiag {
-    internet [shape = cloud];
-    internet -- router;
-    router [address = "210.x.x.x"];
-    network LAN {
-        address = "192.168.0.0/24"
-        router [address = "192.168.0.1"];
-        thinkpad-p14s [address = "192.168.0.w"];
-        minis-um690 [address = "192.168.0.x"];
-        xbox-series-s [address = "192.168.0.y"];
-        atom-server [address = "192.168.0.z", shape = database"]
-    }
-    network WLAN {
-        address = "172.16.15.0/24"
-        router [address = "172.16.15.1"];
-        group {
-            description = モバイル
-            iphone01 [address = "172.16.15.w"];
-            ipad01 [address = "172.16.15.x"];
-        }
-        group {
-            color = "#add8e6"
-            description = 据え置き
-            fire01 [address = "172.16.15.y"];
-            echo01 [address = "172.16.15.z"];
-        }
-    }
-}
-@enduml
-----
------
-
-[plantuml, diag-nwdiag-network1, svg, pdfwidth=86%]
-[caption=""]
-----
-include::puml/diag-nwdiag-network1.puml[]
-----
-
-<<<
-
-=== システム構成図
-
-簡単なシステム構成図を https://github.com/plantuml-stdlib/C4-PlantUML[PlantUML/C4 コンポーネント]で記述します。
-
-[source]
------
-[plantuml, diag-c4-component-sample1, svg]
-[caption=""]
-----
-include::puml/diag-c4-component-sample1.puml[]
-----
------
-
-[plantuml, diag-c4-component-sample1, svg]
-[caption=""]
-----
-include::puml/diag-c4-component-sample1.puml[]
-----
-
-NOTE: 現在のところ ``$shadowing="true"`` 指定のドロップシャドーは HTML 版のみ反映します。
-
-<<<
-
-=== タイミングチャート
-
-デジタル回路などのタイミングチャートを PlantUML で記述します。
-
-[source]
-[caption=""]
-.``diag-timing-sample1.puml`` - https://github.com/h1romas4/asciidoctor-gradle-template/blob/master/src/docs/asciidoc/Chapter04/puml/diag-timing-sample1.puml[ソース] より抜粋
------
-[plantuml, diag-timing-sample1, svg, pdfwidth=90%, width=80%]
-----
-@startuml diag-timing-sample1
-scale 40 as 150 pixels
-clock "Clock" as clk with period 1
-binary "CS" as CS
-binary "WR" as WR
-binary "RD" as RD
-binary "A0" as A0
-binary "A1" as A1
-binary "IC" as IC
-concise "DataBus" as DB
-
-@0 as :start
-@20 as :set_data_bus_1
-@30 as :set_addr_1
-@40 as :write_start_1
-@60 as :write_end_1
-
-@:start
-IC is high
-CS is high
-WR is high
-RD is high
-A0 is low
-A1 is low
-
-@:set_data_bus_1
-DB is "0xff"
-DB -> WR@+20
-note bottom of DB : MCP23S17 GPIOB から
-
-@:set_addr_1
-A0 is high
-A1 is low
-
-@:write_start_1
-CS is low : WR/CS 同時に設定
-WR is low
-DB@40 <-> @60 : {10 us}
-
-@:write_end_1
-CS is high
-WR is high
-
-highlight 40 to 60 #SkyBlue;line:DimGrey : 書き込み
-@enduml
-----
------
-
-[plantuml, diag-timing-sample1, svg, pdfwidth=90%, width=80%]
-[caption=""]
-----
-include::puml/diag-timing-sample1.puml[]
-----
-
-'''
-
-.Open Iconic アイコン
-****
-PlantUML 内で ``<&アイコン名>`` 形式で使える Open Iconic アイコンは次の通りです。なお、アイコン名はこの文書が HTML 版の場合 menu:ウェブブラウザ[右クリック > 画像を開く] するとコピーアンドペーストで取得できます。
-
-[plantuml, open-iconic-list, svg]
-[caption=""]
-----
-@startuml
-listopeniconic
-@enduml
-----
-****
-
-<<<
-
-=== マインドマップ
-
-PlantUML のマインドマップ記法を使い木構造を表現します。
-
-[source]
------
-[plantuml, diag-mindmap-sample1, svg]
-[caption=""]
-----
-include::puml/diag-mindmap-sample1.puml[]
-----
------
-
-[plantuml, diag-mindmap-sample1, svg]
-[caption=""]
-----
-include::puml/diag-mindmap-sample1.puml[]
-----

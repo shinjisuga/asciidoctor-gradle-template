@@ -1,0 +1,33 @@
+@startuml diag-sequence-sample1
+skinparam monochrome true
+hide footbox
+participant "ユーザ追加申請者" as requester
+participant "ユーザ追加設定作業者" as worker
+entity "チケット管理" as ticketmanager
+participant "承認者" as applover
+participant "GitHub" as github
+
+== ユーザ追加申請承認 ==
+requester -> ticketmanager: ユーザ追加申請
+ticketmanager -> applover: 申請通知
+applover -> ticketmanager: 承認済ステータスに変更
+ticketmanager -> worker: 作業依頼通知
+
+== ユーザ追加作業の申請承認 ==
+worker -> ticketmanager: 特権昇格申請チケット記載
+ticketmanager -> applover: 申請通知
+applover -> github: 特権昇格作業
+applover -> ticketmanager: 承認済ステータスに変更
+ticketmanager -> worker: 作業可能通知
+
+== ユーザ追加作業 ==
+worker -> github: ユーザ追加作業
+worker -> ticketmanager: ユーザ追加作業完了。権限剥奪
+ticketmanager --> requester: 利用可能通知
+
+== 権限剥奪 ==
+ticketmanager -> applover: 権限剥奪作業依頼
+applover -> github: 特権はく奪
+applover -> ticketmanager: 権限剥奪作業完了
+
+@enduml

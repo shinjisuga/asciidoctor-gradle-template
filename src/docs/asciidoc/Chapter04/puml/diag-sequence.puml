@@ -1,0 +1,24 @@
+@startuml diag-sequence-sample1
+skinparam monochrome true
+hide footbox
+participant "申請者" as requester
+entity "チケット管理" as ticketmanager
+participant "承認者" as applover
+participant "キュー" as queue
+participant "AWS IAM" as awsiam
+== 申請承認 ==
+requester -> ticketmanager: 特権昇格申請チケット記載
+ticketmanager -> applover: 申請通知
+applover -> ticketmanager: 承認済ステータスに変更
+== 権限付与 ==
+ticketmanager -> queue: 申請内容メッセージ登録
+queue -> lambda: 権限付与処理実行
+lambda --> awsiam: IAM変更（権限付与）
+lambda --> ticketmanager: 処理済みステータスに変更
+ticketmanager --> requester: 利用可能通知
+== 権限剥奪 ==
+ticketmanager -> queue: 申請内容メッセージ登録
+queue -> lambda: 権限剥奪処理実行
+lambda --> awsiam: IAM変更（権限剥奪）
+lambda --> ticketmanager: 完了ステータスに変更
+@enduml

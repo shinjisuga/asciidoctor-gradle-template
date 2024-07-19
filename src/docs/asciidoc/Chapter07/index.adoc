@@ -1,0 +1,126 @@
+include::../attribute.adoc[]
+
+
+== アジェンダ
+
+* はじめに
+* 得られる価値
+* プラクティス
+
+== はじめに
+
+* なぜこの話を今日するのか。
+** akamaiのコード化を始めようとしている。
+** SaaSのコード化はそれだけでも十分に価値がある。
+** より価値を引き出すためのプラクティスを共有したい。
+
+== 得られる価値
+
+インフラのコード化（Infrastructure as Code, IaC）::
+Terraformを使うことで、AWS/Azure/GCP以外のSaaS系のツールも設定をコードとして管理できます。これにより、設定のバージョン管理が可能となり、 **変更履歴を簡単に追跡できる** ようになります。
+
+コラボレーションの向上::
+チームを跨がるコミュニケーションが削減され、変更やレビュー、変更管理がスムーズに行えるようになり、**コミュニケーションコストが削減** されます。
+
+自動化と一貫性::
+手動で設定を行うとヒューマンエラーが発生する可能性がありますが、Terraformスクリプトを使用すれば、一貫性のある設定が自動的に適用されます。
+
+再利用性とテンプレート化::
+一度書いたTerraformコードを再利用することで、同じ設定を複数の環境で簡単に適用できます。また、既存のモジュールやテンプレートを利用することで、新しい環境構築が迅速に行えます。
+
+監査とコンプライアンス::
+すべての設定がコードとして残るため、監査やコンプライアンスの要件に適合しやすくなります。変更履歴が明確になり、誰がいつ何を変更したかを容易に追跡できます。
+
+整合性の確保::
+環境間での設定のばらつきを防ぐため、Terraformを使うことでSaaSの設定が一貫して適用されることを保証できます。
+
+スケーラビリティ::
+大規模な環境や複数のアカウントに対しても、Terraformを使えば設定を簡単にスケールアウトできます。特に複数のSaaSを同時に管理する場合に有用です。
+
+== プラクティス
+
+=== 変更履歴をより簡単に追跡する
+障害発生時の原因調査が格段に楽になります。システムに関わる全ての変更履歴をマーカーすることが理想です。変更が原因なのか、そうでないのか。変更が原因の場合は、誰がいつどんな変更をしたかが瞬時にわかるようになります。
+
+`Akamai` は、サービスの実行に関連するため高い効果が予想されます。
+
+image::./change-tracking.drawio.png[]
+
+==== 設定例
+GitHub Actionsのjobsに下記を設定する。
+```
+jobs:
+  newrelic:
+    runs-on: ubuntu-latest
+    name: New Relic
+    steps:
+      # This step builds a var with the release tag value to use later
+      - name: Set Release Version from Tag
+        run: echo "RELEASE_VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
+      # This step creates a new Change Tracking Marker
+      - name: New Relic Application Deployment Marker
+        uses: newrelic/deployment-marker-action@v2.3.0
+        with:
+          apiKey: ${{ secrets.NEW_RELIC_API_KEY }}
+          guid: ${{ secrets.NEW_RELIC_DEPLOYMENT_ENTITY_GUID }}
+          version: "${{ env.RELEASE_VERSION }}"
+          user: "${{ github.actor }}"
+```
+
+参考リンク：
+https://docs.newrelic.com/jp/docs/change-tracking/change-tracking-introduction/[NewRelic |change-tracking-introduction]
+
+=== セルフサービスでの変更
+
+GitHubをterraform管理下におきメンバー追加や削除をセルフサービス化した例です。
+これにより、管理者権限を与えることなく、利用者が自身で変更することができるようになり、
+申請・承認プロセスが簡略化された。
+
+==== もともとのプロセス
+作業日が決まっており、申請者は最大で２週間待ち。
+
+image::./dev-flow-before.drawio.png[]
+
+
+==== セルフサービス型になったあとのプロセス
+プルリクエストの確認は優先作業とされており、１日以内。
+
+image::./dev-flow-after.drawio.png[]
+
+==== 実際に変更してもらう内容の例
+
+プルリクエストに申請内容を記載する運用をしていた。
+プルリクエストテンプレートを利用して、申請内容を定型化していた。
+
+```
+# Github 組織チームリスト
+team_list = {
+  "XXX-admin" = {
+    "description" = "統括責任者チーム"
+  }
+  "XXX-platform-admin" = {
+    "description" = "基盤管理者チーム"
+  }
+  "XXX-sre-YYY" = {
+    "description" = "YYYのSREメンバ"
+  }
+  "XXX-sre-uls" = {
+    "description" = "ウルシステムSREメンバ"
+  }
+  ## ここにチームを追加する。チームを追加した場合は、チームメンバーリストを追加する。
+}
+
+# XXX-sre-uls チームメンバーリスト
+XXX_sre_uls_membership_list = {
+  "AAAA@ulsystems.co.jp"               = "member"
+  "BBBB@ulsystems.co.jp"               = "member"
+  "CCCC@ulsystems.co.jp"               = "member"
+  ## ここにメンバーを追加する
+}
+```
+
+
+== Appendix
+
+参考リンク： https://registry.terraform.io/browse/providers[Terraform | Browse Providers]
+
